@@ -1,9 +1,10 @@
+import 'package:chat_app/utils/AppConstants/appconstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class OnBoardingPage extends StatelessWidget {
+  const OnBoardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,16 +65,22 @@ class LoginPage extends StatelessWidget {
               //Bold text connect friends easily & quickly
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  "Connect friends\neasily & quickly",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.white,
-                    fontSize: 40,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ).animate().fade(duration: 450.ms).slideX(duration: 500.ms),
+                child: FittedBox(
+                  fit:
+                      BoxFit.contain, // Ensures the text fits within the bounds
+                  child: Text(
+                    "Connect friends\neasily & quickly",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      wordSpacing: 2,
+                      letterSpacing: 2,
+                    ),
+                  ).animate().fade(duration: 450.ms).slideX(duration: 500.ms),
+                ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               // Our chat app is the perfect way to stay connected with friends and family.
@@ -189,7 +196,9 @@ class LoginPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.ROUTE_SIGNINPAGE);
+                  },
                   child: Text(
                     "Sign Up With Mail",
                     textAlign: TextAlign.center,
