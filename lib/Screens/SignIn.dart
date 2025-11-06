@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -9,7 +10,22 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(),
+      appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+          statusBarBrightness: Brightness.light, // For iOS (dark icons)
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          onPressed: () {
+            // Navigate back to the previous screen
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
@@ -18,7 +34,7 @@ class SignInPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               //Login In to vibeConnect
-              SizedBox(height: MediaQuery.of(context).size.height * 0.10),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -60,7 +76,7 @@ class SignInPage extends StatelessWidget {
                     ).animate().fadeIn(duration: 500.ms),
                   ),
                 ],
-              ),
+              ).animate().slideX(duration: 500.ms, begin: -1),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               //Welcome Text
               Text(
@@ -73,7 +89,7 @@ class SignInPage extends StatelessWidget {
                   fontFamily: 'Poppins',
                   letterSpacing: 1.2,
                 ),
-              ),
+              ).animate().fade(duration: 600.ms, delay: 200.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               //icons for login
               Row(
@@ -94,7 +110,7 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ).animate().scale(duration: 400.ms, delay: 300.ms),
                   SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -111,7 +127,7 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ).animate().scale(duration: 400.ms, delay: 400.ms),
                   SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -129,10 +145,10 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ).animate().scale(duration: 400.ms, delay: 500.ms),
                 ],
               ),
-              //or horizontal line
+              // horizontal line
               Padding(
                 padding: EdgeInsets.all(20),
                 child: Row(
@@ -180,16 +196,26 @@ class SignInPage extends StatelessWidget {
                       onTapOutside: (_) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
                       decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email_outlined, color: Colors.grey),
                         hintText: "Enter your email",
+                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        filled: true,
+                        fillColor: Colors.grey.shade200,
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(
+                              color: Colors.green, width: 2),
                         ),
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ],
                 ),
-              ),
+              ).animate().slideX(duration: 500.ms, begin: -1, delay: 600.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.03),
               //textbox with password
               Padding(
@@ -211,17 +237,29 @@ class SignInPage extends StatelessWidget {
                     TextField(
                       onTapOutside: (_) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
+                      obscureText: true,
                       decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey),
                         hintText: "Enter your password",
+                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        filled: true,
+                        fillColor: Colors.grey.shade200,
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide.none,
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: BorderSide(color: Colors.green, width: 2),
+                        ),
+                        suffixIcon:
+                            Icon(Icons.visibility_off_outlined, color: Colors.grey),
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ],
                 ),
-              ),
+              ).animate().slideX(duration: 500.ms, begin: 1, delay: 700.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -246,7 +284,7 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ).animate().slideY(duration: 500.ms, begin: 1, delay: 800.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               //forget password,
               SafeArea(
@@ -260,7 +298,7 @@ class SignInPage extends StatelessWidget {
                     fontFamily: 'Poppins',
                   ),
                 ),
-              ),
+              ).animate().fade(duration: 500.ms, delay: 900.ms),
             ],
           ),
         ),

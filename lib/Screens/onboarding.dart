@@ -1,5 +1,6 @@
 import 'package:chat_app/utils/AppConstants/appconstants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -22,6 +23,10 @@ class OnBoardingPage extends StatelessWidget {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+              statusBarBrightness: Brightness.light,
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
@@ -66,8 +71,7 @@ class OnBoardingPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: FittedBox(
-                  fit:
-                      BoxFit.contain, // Ensures the text fits within the bounds
+                  fit: BoxFit.contain, // Ensures the text fits within the bounds
                   child: Text(
                     "Connect friends\neasily & quickly",
                     textAlign: TextAlign.center,
@@ -160,9 +164,7 @@ class OnBoardingPage extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    const Expanded(
-                      child: Divider(color: Colors.grey, thickness: 1),
-                    ),
+                    const Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
@@ -175,9 +177,7 @@ class OnBoardingPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Expanded(
-                      child: Divider(color: Colors.grey, thickness: 1),
-                    ),
+                    const Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                   ],
                 ),
               ),
@@ -187,10 +187,7 @@ class OnBoardingPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 100,
-                      vertical: 15,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -211,7 +208,7 @@ class OnBoardingPage extends StatelessWidget {
                       color: Color(0xff0A1832),
                     ),
                   ),
-                ),
+                ).animate().fade(delay: 500.ms, duration: 400.ms).slideY(begin: 1),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
@@ -237,7 +234,7 @@ class OnBoardingPage extends StatelessWidget {
                   ],
                 ),
                 textAlign: TextAlign.center,
-              ),
+              ).animate().fade(delay: 600.ms, duration: 400.ms).slideY(begin: 1),
             ],
           ),
         ),
