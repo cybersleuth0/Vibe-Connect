@@ -97,7 +97,7 @@ class OnBoardingPage extends StatelessWidget {
                     fontFamily: "Montserrat",
                     color: Colors.grey,
                     fontSize: 16, // Slightly adjusted font size for readability
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -157,7 +157,7 @@ class OnBoardingPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              ).animate().fade(duration: 450.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               //or horizontal line
               Padding(
@@ -180,7 +180,7 @@ class OnBoardingPage extends StatelessWidget {
                     const Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                   ],
                 ),
-              ),
+              ).animate().fade(delay: 200.ms, duration: 400.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.03),
               //login with mail
               Padding(
@@ -208,7 +208,7 @@ class OnBoardingPage extends StatelessWidget {
                       color: Color(0xff0A1832),
                     ),
                   ),
-                ).animate().fade(delay: 500.ms, duration: 400.ms).slideY(begin: 1),
+                ).animate().fade(delay: 300.ms, duration: 400.ms).slideY(begin: 1),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
@@ -234,7 +234,7 @@ class OnBoardingPage extends StatelessWidget {
                   ],
                 ),
                 textAlign: TextAlign.center,
-              ).animate().fade(delay: 600.ms, duration: 400.ms).slideY(begin: 1),
+              ).animate().fade(delay: 400.ms, duration: 450.ms).slideY(begin: 1),
             ],
           ),
         ),

@@ -6,7 +6,7 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.ROUTE_SPLASHPAGE,
+      initialRoute: AppRoutes.ROUTE_HOMEPAGE,
       routes: AppRoutes.getRoutes(),
       themeMode: ThemeMode.light,
       theme: ThemeData(

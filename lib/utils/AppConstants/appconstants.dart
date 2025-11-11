@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/homepage.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../Screens/SignIn.dart';
@@ -9,10 +10,12 @@ class AppRoutes {
   static const String ROUTE_ONBOARDINGPAGE = "/onboarding";
   static const String ROUTE_SIGNINPAGE = "/signin";
   static const String ROUTE_SIGNUPPAGE = "/signup";
+  static const String ROUTE_HOMEPAGE = "/home";
 
   static Map<String, WidgetBuilder> getRoutes() => {
     ROUTE_SPLASHPAGE: (context) => SplashPage(),
     ROUTE_ONBOARDINGPAGE: (context) => OnBoardingPage(),
     ROUTE_SIGNINPAGE: (context) => SignInPage(),
+    ROUTE_HOMEPAGE: (context) => HomePage(),
   };
 }

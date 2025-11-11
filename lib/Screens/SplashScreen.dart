@@ -52,7 +52,9 @@ class _SplashPageState extends State<SplashPage> {
                   .fade(duration: 500.ms)
                   .scale(
                     delay: 600.ms,
-                    duration: 700.ms,
+                    duration: 1200.ms,
+                    begin: const Offset(0.1, 0.1),
+                    curve: Curves.elasticOut,
                   ), // Add fade and scale animations
         ),
       ),
