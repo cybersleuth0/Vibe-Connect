@@ -6,8 +6,8 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.ROUTE_HOMEPAGE,
-      routes: AppRoutes.getRoutes(),
+      initialRoute: AppRoutes.ROUTE_SPLASHPAGE,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
       themeMode: ThemeMode.light,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(

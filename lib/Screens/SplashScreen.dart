@@ -15,7 +15,9 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     // Navigate after animations complete (500ms fade + 700ms scale = 1200ms or 1.2 seconds)
     Future.delayed(const Duration(milliseconds: 2000)).then((value) {
-      Navigator.pushReplacementNamed(context, AppRoutes.ROUTE_ONBOARDINGPAGE);
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.ROUTE_ONBOARDINGPAGE);
+      }
     });
   }
 
@@ -26,7 +28,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Hero(
           tag: "splash",
           child:
-              Text.rich(
+              const Text.rich(
                     TextSpan(
                       text: "Vibe",
                       style: TextStyle(

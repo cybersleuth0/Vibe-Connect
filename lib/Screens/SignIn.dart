@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../utils/AppConstants/appconstants.dart';
+
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
 
@@ -11,7 +13,7 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
           statusBarBrightness: Brightness.light, // For iOS (dark icons)
         ),
@@ -19,7 +21,7 @@ class SignInPage extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () {
             // Navigate back to the previous screen
             Navigator.of(context).pop();
@@ -29,7 +31,7 @@ class SignInPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -38,7 +40,7 @@ class SignInPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Log in to ",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -49,10 +51,10 @@ class SignInPage extends StatelessWidget {
                       letterSpacing: 1.2,
                     ),
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   Hero(
                     tag: "splash",
-                    child: Text.rich(
+                    child: const Text.rich(
                       TextSpan(
                         text: "Vibe",
                         style: TextStyle(
@@ -79,7 +81,7 @@ class SignInPage extends StatelessWidget {
               ).animate().slideX(duration: 500.ms, begin: -1),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               //Welcome Text
-              Text(
+              const Text(
                 "Welcome back! Sign in using your social account or email to continue us",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -111,7 +113,7 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                   ).animate().scale(duration: 400.ms, delay: 300.ms),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -128,7 +130,7 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                   ).animate().scale(duration: 400.ms, delay: 400.ms),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -139,7 +141,7 @@ class SignInPage extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: SvgPicture.asset(
                           "lib/assets/icons/Apple.svg",
-                          color: Colors.black,
+                          colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
                           height: 40,
                           width: 40,
                         ),
@@ -149,15 +151,13 @@ class SignInPage extends StatelessWidget {
                 ],
               ),
               // horizontal line
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    const Expanded(
-                      child: Divider(color: Colors.grey, thickness: 1),
-                    ),
+                    Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
                         "OR",
                         style: TextStyle(
@@ -168,9 +168,7 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Expanded(
-                      child: Divider(color: Colors.grey, thickness: 1),
-                    ),
+                    Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                   ],
                 ),
               ),
@@ -181,22 +179,21 @@ class SignInPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Your Mail",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: Color(0xff24786d1),
+                        color: Color(0xff24786d), // Fixed hex color typo
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.1,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
-                      onTapOutside: (_) =>
-                          FocusManager.instance.primaryFocus?.unfocus(),
+                      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email_outlined, color: Colors.grey),
+                        prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey),
                         hintText: "Enter your email",
                         hintStyle: TextStyle(color: Colors.grey.shade500),
                         filled: true,
@@ -207,8 +204,7 @@ class SignInPage extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(
-                              color: Colors.green, width: 2),
+                          borderSide: const BorderSide(color: Colors.green, width: 2),
                         ),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -223,23 +219,22 @@ class SignInPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Your Password",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: Color(0xff24786d1),
+                        color: Color(0xff24786d), // Fixed hex color typo
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.1,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
-                      onTapOutside: (_) =>
-                          FocusManager.instance.primaryFocus?.unfocus(),
+                      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
                       obscureText: true,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey),
+                        prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
                         hintText: "Enter your password",
                         hintStyle: TextStyle(color: Colors.grey.shade500),
                         filled: true,
@@ -250,10 +245,12 @@ class SignInPage extends StatelessWidget {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
-                          borderSide: BorderSide(color: Colors.green, width: 2),
+                          borderSide: const BorderSide(color: Colors.green, width: 2),
                         ),
-                        suffixIcon:
-                            Icon(Icons.visibility_off_outlined, color: Colors.grey),
+                        suffixIcon: const Icon(
+                          Icons.visibility_off_outlined,
+                          color: Colors.grey,
+                        ),
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -265,14 +262,20 @@ class SignInPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  onPressed: () {},
-                  child: Text(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      AppRoutes.ROUTE_HOMEPAGE,
+                      (route) => false,
+                    );
+                  },
+                  child: const Text(
                     "Login",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -287,7 +290,7 @@ class SignInPage extends StatelessWidget {
               ).animate().slideY(duration: 500.ms, begin: 1, delay: 800.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               //forget password,
-              SafeArea(
+              const SafeArea(
                 child: Text(
                   "Forget Password ?",
                   textAlign: TextAlign.center,

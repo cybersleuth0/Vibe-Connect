@@ -21,9 +21,9 @@ class OnBoardingPage extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AppBar(
-            systemOverlayStyle: SystemUiOverlayStyle(
+            systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarIconBrightness: Brightness.light, // For Android (dark icons)
               statusBarBrightness: Brightness.light,
             ),
@@ -32,32 +32,31 @@ class OnBoardingPage extends StatelessWidget {
             centerTitle: true,
             title: Hero(
               tag: "splash",
-              child:
-                  Text.rich(
-                        TextSpan(
-                          text: "Vibe",
-                          style: TextStyle(
-                            fontFamily: "Pacifico",
-                            color: Colors.white,
-                            fontSize: 30,
-                            // fontWeight: FontWeight.w900,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: " Connect",
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                      .animate()
-                      .fade(duration: 400.ms)
-                      .slideY(duration: 300.ms, begin: -1, end: 0),
+              child: const Text.rich(
+                TextSpan(
+                  text: "Vibe",
+                  style: TextStyle(
+                    fontFamily: "Pacifico",
+                    color: Colors.white,
+                    fontSize: 30,
+                    // fontWeight: FontWeight.w900,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: " Connect",
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              .animate()
+              .fade(duration: 400.ms)
+              .slideY(duration: 300.ms, begin: -1, end: 0),
             ),
           ),
         ),
@@ -72,7 +71,7 @@ class OnBoardingPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: FittedBox(
                   fit: BoxFit.contain, // Ensures the text fits within the bounds
-                  child: Text(
+                  child: const Text(
                     "Connect friends\neasily & quickly",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -88,8 +87,8 @@ class OnBoardingPage extends StatelessWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               // Our chat app is the perfect way to stay connected with friends and family.
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
                   "Our chat app is the perfect way to stay connected with friends and family.",
                   textAlign: TextAlign.center,
@@ -122,7 +121,7 @@ class OnBoardingPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -139,7 +138,7 @@ class OnBoardingPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -160,13 +159,13 @@ class OnBoardingPage extends StatelessWidget {
               ).animate().fade(duration: 450.ms),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               //or horizontal line
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    const Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+                    Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
                         "OR",
                         style: TextStyle(
@@ -177,7 +176,7 @@ class OnBoardingPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+                    Expanded(child: Divider(color: Colors.grey, thickness: 1)),
                   ],
                 ),
               ).animate().fade(delay: 200.ms, duration: 400.ms),
@@ -187,7 +186,7 @@ class OnBoardingPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -196,7 +195,7 @@ class OnBoardingPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, AppRoutes.ROUTE_SIGNINPAGE);
                   },
-                  child: Text(
+                  child: const Text(
                     "Sign Up With Mail",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -219,9 +218,9 @@ class OnBoardingPage extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 18,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
-                  children: [
+                  children: const [
                     TextSpan(
                       text: "Log in",
                       style: TextStyle(
