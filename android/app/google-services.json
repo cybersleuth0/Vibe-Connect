@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "129684131304",
+    "project_id": "vibe-connect-a4616",
+    "storage_bucket": "vibe-connect-a4616.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129684131304:android:1dc46c6ce9b12442cd685d",
+        "android_client_info": {
+          "package_name": "com.example.chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129684131304-mfqvnmebp7mb3f8ijpop2g4200rci5mk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chat_app",
+            "certificate_hash": "27c9c2ca9ce20536d5940cd87f4cc4fd2efb9332"
+          }
+        },
+        {
+          "client_id": "129684131304-0qpotvi1bsh89kafaoed9edg2shf8vlg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpTSCCOvooV4MZkzke9rZ8g_q10eoJooU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129684131304-0qpotvi1bsh89kafaoed9edg2shf8vlg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "129684131304-hllqap2m1ivnivuqqogu8421pd04opfc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../utils/AppConstants/appconstants.dart';
+import '../../../utils/AppConstants/appconstants.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -302,6 +302,39 @@ class SignInPage extends StatelessWidget {
                   ),
                 ),
               ).animate().fade(duration: 500.ms, delay: 900.ms),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              // Don't have an account?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account?",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.ROUTE_SIGNUPPAGE,
+                      );
+                    },
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff24786D),
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ),
+                ],
+              ).animate().fade(duration: 500.ms, delay: 1000.ms),
             ],
           ),
         ),

@@ -1,18 +1,19 @@
-import 'package:chat_app/Screens/homepage.dart';
 import 'package:chat_app/utils/custom_page_route.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../Screens/SignIn.dart';
-import '../../Screens/SplashScreen.dart';
-import '../../Screens/chatscreen.dart';
-import '../../Screens/onboarding.dart';
+import '../../Screens/Auth/SignIn.dart';
+import '../../Screens/Auth/SignUp.dart';
+import '../../Screens/Core/SplashScreen.dart';
+import '../../Screens/Chat/ChatScreen.dart';
+import '../../Screens/Core/HomePage.dart';
+import '../../Screens/Onboarding/OnboardingPage.dart';
 
 class AppRoutes {
-  static const String ROUTE_SPLASHPAGE = "/splash";
-  static const String ROUTE_ONBOARDINGPAGE = "/onboarding";
-  static const String ROUTE_SIGNINPAGE = "/signin";
-  static const String ROUTE_SIGNUPPAGE = "/signup";
-  static const String ROUTE_HOMEPAGE = "/home";
+  static const String ROUTE_SPLASHPAGE = "/";  // Root route
+  static const String ROUTE_ONBOARDINGPAGE = "/welcome";
+  static const String ROUTE_SIGNINPAGE = "/auth/login";
+  static const String ROUTE_SIGNUPPAGE = "/auth/register";
+  static const String ROUTE_HOMEPAGE = "/dashboard";
   static const String ROUTE_CHATSCREEN = "/chat";
 
   // OLD METHOD - Not used anymore but kept for reference
@@ -40,6 +41,11 @@ class AppRoutes {
       case ROUTE_SIGNINPAGE:
         return SlideUpPageRoute(
           child: const SignInPage(),
+          settings: settings,
+        );
+      case ROUTE_SIGNUPPAGE:
+        return SlideUpPageRoute(
+          child: const SignUpPage(),
           settings: settings,
         );
       case ROUTE_HOMEPAGE:
