@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../Data/Remote/Repository/Firebase_repository.dart';
 import '../../../utils/AppConstants/appconstants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -21,74 +19,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
-
-  void _signUp() async {
-    // Capture context to avoid linting error
-    final BuildContext currentContext = context;
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(currentContext).showSnackBar(
-        const SnackBar(
-          content: Text('Passwords do not match'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await registerUser(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
-
-      // Show success message
-      ScaffoldMessenger.of(currentContext).showSnackBar(
-        const SnackBar(
-          content: Text('Account created successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      // Navigate to home or sign in page
-      Navigator.pushNamedAndRemoveUntil(
-        currentContext,
-        AppRoutes.ROUTE_HOMEPAGE,
-        (route) => false,
-      );
-    } on FirebaseAuthException catch (e) {
-      String errorMessage = 'An error occurred';
-      if (e.code == 'email-already-in-use') {
-        errorMessage = 'Email is already registered';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'Invalid email address';
-      } else if (e.code == 'weak-password') {
-        errorMessage = 'Password is too weak';
-      }
-
-      ScaffoldMessenger.of(currentContext).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(currentContext).showSnackBar(
-        const SnackBar(
-          content: Text('An unexpected error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +153,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: SvgPicture.asset(
                           "lib/assets/icons/Apple.svg",
-                          colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                          colorFilter: const ColorFilter.mode(
+                            Colors.black,
+                            BlendMode.srcIn,
+                          ),
                           height: 40,
                           width: 40,
                         ),
@@ -265,7 +198,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       "Your Email",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: Color(0xff24786d), // Fixed hex color typo
+                        color: Color(0xff24786d),
+                        // Fixed hex color typo
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.1,
@@ -306,7 +240,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       "Password",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: Color(0xff24786d), // Fixed hex color typo
+                        color: Color(0xff24786d),
+                        // Fixed hex color typo
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.1,
@@ -361,7 +296,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       "Confirm Password",
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: Color(0xff24786d), // Fixed hex color typo
+                        color: Color(0xff24786d),
+                        // Fixed hex color typo
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.1,
@@ -424,7 +360,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
-                        onPressed: _signUp,
+                        onPressed: () {},
                         child: const Text(
                           "Sign Up",
                           textAlign: TextAlign.center,
@@ -454,10 +390,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        AppRoutes.ROUTE_SIGNINPAGE,
-                      );
+                      Navigator.pushReplacementNamed(context, AppRoutes.ROUTE_SIGNINPAGE);
                     },
                     child: const Text(
                       "Sign In",
