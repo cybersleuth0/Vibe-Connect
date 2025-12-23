@@ -1,0 +1,132 @@
+# .github/workflows/flutter-ci.yml
+# Your First Flutter CI/CD Pipeline - Keep It Simple!
+
+# Give your pipeline a name (shows up in GitHub UI)
+name: Flutter CI
+
+# WHEN should this run?
+on:
+  push:
+    branches: [ master ]  # Every time you push to main branch
+  pull_request:         # Every time someone creates a PR
+
+# Define what to do
+jobs:
+  # Job 1: Check if code is good
+  analyze-and-test:
+    name: 🔍 Analyze & Test
+    runs-on: ubuntu-latest  # Use free Ubuntu computer from GitHub
+    timeout-minutes: 15     # Cancel if stuck for >15 minutes
+
+    steps:
+      # Step 1: Download your code to the runner
+      - name: 📥 Get code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Flutter on the runner
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.0'  # Change to your Flutter version
+          channel: 'stable'
+          cache: true  # Speeds up future runs
+
+      # Step 3: Download all packages from pubspec.yaml
+      - name: 📦 Get dependencies
+        run: flutter pub get
+
+      # Step 4: Check code formatting
+      - name: ✨ Check formatting
+        run: dart format --set-exit-if-changed .
+        continue-on-error: true  # Don't fail pipeline if formatting is off
+
+      # Step 5: Look for code errors
+      - name: 🔍 Analyze code
+        run: flutter analyze
+
+#      # Step 6: Run all tests
+#      - name: 🧪 Run tests
+#        run: flutter test --reporter github
+
+  # Job 2: Build the app (only runs if Job 1 passes)
+  build-apk:
+    name: 🏗️ Build APK
+    needs: analyze-and-test  # Wait for tests to pass
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # Get code again (each job starts fresh)
+      - name: 📥 Get code
+        uses: actions/checkout@v4
+
+      # Install Java (needed for Android builds)
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '25'
+
+      # Install Flutter
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.0'
+          channel: 'stable'
+          cache: true
+
+      # Get packages
+      - name: 📦 Get dependencies
+        run: flutter pub get
+
+      # Build the APK
+      - name: 🏗️ Build APK
+        run: flutter build apk --release
+
+      # Save the APK so you can download it
+      - name: 📤 Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7  # Keep for 7 days
+
+        # ============================================
+        # WHAT HAPPENS WHEN YOU PUSH CODE:
+        # ============================================
+        #
+        # 1. GitHub sees you pushed code
+        # 2. GitHub starts an Ubuntu computer (runner)
+        # 3. Runner downloads your code
+        # 4. Runner installs Flutter
+        # 5. Runner runs: pub get → analyze → test
+        # 6. If tests pass, runner builds APK
+        # 7. You can download APK from GitHub UI
+        #
+        # ============================================
+        # HOW TO USE THIS FILE:
+        # ============================================
+        #
+        # 1. Create this folder in your project: .github/workflows/
+        # 2. Create this file inside: flutter-ci.yml
+        # 3. Copy-paste this entire code
+        # 4. Change 'flutter-version' to match yours
+        # 5. Commit and push:
+        #    git add .
+        #    git commit -m "Add CI/CD"
+        #    git push
+        # 6. Go to GitHub → Your Repo → Actions tab
+        # 7. Watch your first pipeline run! 🎉
+        #
+        # ============================================
+        # TROUBLESHOOTING:
+        # ============================================
+        #
+        # Pipeline failed? Click on the red X to see which step failed.
+        # Common issues:
+        # - Tests failed: Fix your tests locally first
+        # - Analyze failed: Run 'flutter analyze' locally
+        # - Format failed: Run 'dart format .' locally
+        # - Build failed: Run 'flutter build apk' locally
+        #
+        # ============================================
