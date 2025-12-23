@@ -5,7 +5,8 @@ on:
     branches: [master]
 
 jobs:
-  nameOfTheJobIsAnalyze:
+  analyze:            # job id you choose
+    name: Analyze     # human-friendly display name
     runs-on: ubuntu-latest
     steps: # List of commands to run
       - name: Checkout code
