@@ -1,0 +1,21 @@
+name: Project 2
+
+on: 
+  push:
+    branches: [master]
+
+jobs:
+  nameOfTheJobIsAnalyze:
+    runs-on: ubuntu-latest
+    steps: # List of commands to run
+      - name: Checkout code
+        uses: actions/checkout@v4 #Use a pre-made action (like a plugin)
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with: # Configuration options
+          flutter-version: '3.38.0' # Specify the Flutter version to use
+      - name: Install dependencies
+        run: flutter pub get # Run a command to install dependencies
+      - name: Run analysis
+        run: flutter analyze # Run a command to analyze the code
+      
