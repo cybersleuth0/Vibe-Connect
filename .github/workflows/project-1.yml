@@ -1,0 +1,11 @@
+name: Project 1 #name of the workflow
+
+on: [push] # this is the event , what should happen when we push
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest # on which os you want to run this file
+    steps:
+      - run: echo "Hello From CI/CD"
+      - run: date
+      - run: pwd # Runs command-line programs using the operating system's shell
