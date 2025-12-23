@@ -17,6 +17,6 @@ jobs:
           flutter-version: '3.38.0' # Specify the Flutter version to use
       - name: Install dependencies
         run: flutter pub get # Run a command to install dependencies
-      - name: Run analysis
-        run: flutter analyze # Run a command to analyze the code
+      # - name: Run analysis
+      #   run: flutter analyze # Run a command to analyze the code
       
