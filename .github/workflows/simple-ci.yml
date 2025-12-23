@@ -1,0 +1,27 @@
+name: My First Pipeline
+on:
+  push:
+    branches:
+      - master  # or "main" — use your repo's default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.0'
+          cache: true #this allow caching else
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
