@@ -64,8 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '129684131304',
     projectId: 'vibe-connect-a4616',
     storageBucket: 'vibe-connect-a4616.firebasestorage.app',
-    androidClientId: '129684131304-mfqvnmebp7mb3f8ijpop2g4200rci5mk.apps.googleusercontent.com',
-    iosClientId: '129684131304-hllqap2m1ivnivuqqogu8421pd04opfc.apps.googleusercontent.com',
+    androidClientId:
+        '129684131304-mfqvnmebp7mb3f8ijpop2g4200rci5mk.apps.googleusercontent.com',
+    iosClientId:
+        '129684131304-hllqap2m1ivnivuqqogu8421pd04opfc.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatApp',
   );
 
@@ -75,8 +77,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '129684131304',
     projectId: 'vibe-connect-a4616',
     storageBucket: 'vibe-connect-a4616.firebasestorage.app',
-    androidClientId: '129684131304-mfqvnmebp7mb3f8ijpop2g4200rci5mk.apps.googleusercontent.com',
-    iosClientId: '129684131304-hllqap2m1ivnivuqqogu8421pd04opfc.apps.googleusercontent.com',
+    androidClientId:
+        '129684131304-mfqvnmebp7mb3f8ijpop2g4200rci5mk.apps.googleusercontent.com',
+    iosClientId:
+        '129684131304-hllqap2m1ivnivuqqogu8421pd04opfc.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatApp',
   );
 

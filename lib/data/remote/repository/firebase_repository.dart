@@ -1,4 +1,4 @@
-import 'package:chat_app/Data/Models/userModel.dart';
+import 'package:chat_app/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,7 +11,10 @@ class FirebaseRepository {
 
   // User registration
 
-  Future<bool> registerUser({required UserModel user, required String password}) async {
+  Future<bool> registerUser({
+    required UserModel user,
+    required String password,
+  }) async {
     try {
       var userCred = await firebaseAuth.createUserWithEmailAndPassword(
         email: user.email!,

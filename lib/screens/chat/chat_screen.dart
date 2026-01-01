@@ -20,7 +20,11 @@ class _ChatScreenState extends State<ChatScreen> {
       'text': 'I am doing great! Just working on this cool Flutter app.',
       'time': '10:01 AM',
     },
-    {'isMe': false, 'text': 'That sounds awesome! Show me the UI.', 'time': '10:02 AM'},
+    {
+      'isMe': false,
+      'text': 'That sounds awesome! Show me the UI.',
+      'time': '10:02 AM',
+    },
     {
       'isMe': true,
       'text': 'Here it is! It has a liquid glass effect and neon vibes.',
@@ -32,7 +36,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments passed from HomePage
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final name = args?['name'] ?? 'User';
     final avatar = args?['avatar'] ?? '';
     final initials = args?['initials'] ?? name.substring(0, 1);
@@ -40,7 +45,10 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xff2E0249), Color(0xff0A1832)], // Deep Purple to Dark Blue
+          colors: [
+            Color(0xff2E0249),
+            Color(0xff0A1832),
+          ], // Deep Purple to Dark Blue
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -67,7 +75,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                      ),
                       color: Colors.deepPurple.shade800,
                       image: avatar.toString().startsWith('http')
                           ? DecorationImage(
@@ -81,7 +91,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         : Center(
                             child: Text(
                               initials,
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                   ),
@@ -94,7 +107,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF69F0AE),
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xff0A1832), width: 1.5),
+                        border: Border.all(
+                          color: const Color(0xff0A1832),
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),
@@ -168,58 +184,75 @@ class _ChatScreenState extends State<ChatScreen> {
                             alignment: isMe
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.75,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isMe
-                                    ? const Color(0xFFD96FF8).withValues(alpha: 0.2)
-                                    : Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: const Radius.circular(20),
-                                  topRight: const Radius.circular(20),
-                                  bottomLeft: isMe
-                                      ? const Radius.circular(20)
-                                      : Radius.zero,
-                                  bottomRight: isMe
-                                      ? Radius.zero
-                                      : const Radius.circular(20),
-                                ),
-                                border: Border.all(
-                                  color: isMe
-                                      ? const Color(0xFFD96FF8).withValues(alpha: 0.3)
-                                      : Colors.white.withValues(alpha: 0.1),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    msg['text'],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Poppins',
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    msg['time'],
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.5),
-                                      fontSize: 10,
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+                            child:
+                                Container(
+                                      margin: const EdgeInsets.only(bottom: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                            0.75,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isMe
+                                            ? const Color(
+                                                0xFFD96FF8,
+                                              ).withValues(alpha: 0.2)
+                                            : Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: const Radius.circular(20),
+                                          topRight: const Radius.circular(20),
+                                          bottomLeft: isMe
+                                              ? const Radius.circular(20)
+                                              : Radius.zero,
+                                          bottomRight: isMe
+                                              ? Radius.zero
+                                              : const Radius.circular(20),
+                                        ),
+                                        border: Border.all(
+                                          color: isMe
+                                              ? const Color(
+                                                  0xFFD96FF8,
+                                                ).withValues(alpha: 0.3)
+                                              : Colors.white.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            msg['text'],
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Poppins',
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            msg['time'],
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                              fontSize: 10,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    .animate()
+                                    .fadeIn(duration: 300.ms)
+                                    .slideY(begin: 0.1),
                           ),
                         );
                       },
@@ -237,11 +270,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: BackdropFilter(
                     filter: dart_ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -269,7 +307,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                   fontFamily: 'Poppins',
                                 ),
                                 border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
                               ),
                             ),
                           ),
@@ -288,7 +328,11 @@ class _ChatScreenState extends State<ChatScreen> {
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: const Icon(Icons.send, color: Colors.white, size: 18),
+                              icon: const Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                               onPressed: () {
                                 if (_messageController.text.isNotEmpty) {
                                   setState(() {

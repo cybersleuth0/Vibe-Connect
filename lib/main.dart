@@ -1,4 +1,4 @@
-import 'package:chat_app/utils/AppConstants/appconstants.dart';
+import 'package:chat_app/utils/app_constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,7 +12,8 @@ void main() {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+            statusBarIconBrightness:
+                Brightness.dark, // For Android (dark icons)
             statusBarBrightness: Brightness.light, // For iOS (dark icons)
           ),
         ),

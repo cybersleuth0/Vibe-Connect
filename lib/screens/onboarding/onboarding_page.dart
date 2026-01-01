@@ -1,8 +1,9 @@
-import '../../../utils/AppConstants/appconstants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../utils/app_constants/app_constants.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({super.key});
@@ -24,7 +25,8 @@ class OnBoardingPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AppBar(
             systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+              statusBarIconBrightness:
+                  Brightness.light, // For Android (dark icons)
               statusBarBrightness: Brightness.light,
             ),
             backgroundColor: Colors.transparent,
@@ -32,31 +34,32 @@ class OnBoardingPage extends StatelessWidget {
             centerTitle: true,
             title: Hero(
               tag: "splash",
-              child: const Text.rich(
-                TextSpan(
-                  text: "Vibe",
-                  style: TextStyle(
-                    fontFamily: "Pacifico",
-                    color: Colors.white,
-                    fontSize: 30,
-                    // fontWeight: FontWeight.w900,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: " Connect",
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              .animate()
-              .fade(duration: 400.ms)
-              .slideY(duration: 300.ms, begin: -1, end: 0),
+              child:
+                  const Text.rich(
+                        TextSpan(
+                          text: "Vibe",
+                          style: TextStyle(
+                            fontFamily: "Pacifico",
+                            color: Colors.white,
+                            fontSize: 30,
+                            // fontWeight: FontWeight.w900,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: " Connect",
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .animate()
+                      .fade(duration: 400.ms)
+                      .slideY(duration: 300.ms, begin: -1, end: 0),
             ),
           ),
         ),
@@ -70,7 +73,8 @@ class OnBoardingPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: FittedBox(
-                  fit: BoxFit.contain, // Ensures the text fits within the bounds
+                  fit:
+                      BoxFit.contain, // Ensures the text fits within the bounds
                   child: const Text(
                     "Connect friends\neasily & quickly",
                     textAlign: TextAlign.center,
@@ -184,56 +188,74 @@ class OnBoardingPage extends StatelessWidget {
               //login with mail
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.ROUTE_SIGNINPAGE);
-                  },
-                  child: const Text(
-                    "Sign Up With Mail",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontSize: 16,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.bold,
-                      height: 1.0,
-                      color: Color(0xff0A1832),
-                    ),
-                  ),
-                ).animate().fade(delay: 300.ms, duration: 400.ms).slideY(begin: 1),
+                child:
+                    ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 100,
+                              vertical: 15,
+                            ),
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.ROUTE_SIGNUPPAGE,
+                            );
+                          },
+                          child: const Text(
+                            "Sign Up With Mail",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 16,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                              color: Color(0xff0A1832),
+                            ),
+                          ),
+                        )
+                        .animate()
+                        .fade(delay: 300.ms, duration: 400.ms)
+                        .slideY(begin: 1),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
               //existing account),
-              Text.rich(
-                TextSpan(
-                  text: "Existing account? ",
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 18,
-                    color: Colors.white.withValues(alpha: 0.9),
-                  ),
-                  children: const [
-                    TextSpan(
-                      text: "Log in",
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fade(delay: 400.ms, duration: 450.ms).slideY(begin: 1),
+              InkWell(
+                onTap: () =>
+                    Navigator.pushNamed(context, AppRoutes.ROUTE_SIGNINPAGE),
+                child:
+                    Text.rich(
+                          TextSpan(
+                            text: "Existing account? ",
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 18,
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
+                            children: const [
+                              TextSpan(
+                                text: "Log in",
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                        .animate()
+                        .fade(delay: 400.ms, duration: 450.ms)
+                        .slideY(begin: 1),
+              ),
             ],
           ),
         ),

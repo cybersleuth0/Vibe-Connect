@@ -1,4 +1,4 @@
-import '../../../utils/AppConstants/appconstants.dart';
+import '../../../utils/app_constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 

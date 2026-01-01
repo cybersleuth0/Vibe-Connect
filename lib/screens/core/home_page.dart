@@ -1,6 +1,6 @@
 import 'dart:ui' as dart_ui;
 
-import '../../../utils/AppConstants/appconstants.dart';
+import '../../../utils/app_constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,7 +22,11 @@ class _HomePageState extends State<HomePage> {
       'activeIcon': Icons.message_rounded,
       'label': 'Chats',
     },
-    {'icon': Icons.call_outlined, 'activeIcon': Icons.call_rounded, 'label': 'Calls'},
+    {
+      'icon': Icons.call_outlined,
+      'activeIcon': Icons.call_rounded,
+      'label': 'Calls',
+    },
     {
       'icon': Icons.people_outline_rounded,
       'activeIcon': Icons.people_rounded,
@@ -42,7 +46,8 @@ class _HomePageState extends State<HomePage> {
       'time': '2 min ago',
       'unread': 3,
       'online': true,
-      'avatar': 'https://i.pravatar.cc/150?u=1', // Using placeholder URLs for "Rich" feel
+      'avatar':
+          'https://i.pravatar.cc/150?u=1', // Using placeholder URLs for "Rich" feel
       'initials': 'SJ',
     },
     {
@@ -94,7 +99,10 @@ class _HomePageState extends State<HomePage> {
       // Gen Z Vibe: Rich Dark Gradient Background matching Onboarding
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xff2E0249), Color(0xff0A1832)], // Deep Purple to Dark Blue
+          colors: [
+            Color(0xff2E0249),
+            Color(0xff0A1832),
+          ], // Deep Purple to Dark Blue
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -171,7 +179,10 @@ class _HomePageState extends State<HomePage> {
               height: 110,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 itemCount: chats.length + 1, // +1 for "My Status"
                 itemBuilder: (context, index) {
                   if (index == 0) {
@@ -193,7 +204,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   image: const DecorationImage(
                                     // Placeholder for current user
-                                    image: NetworkImage('https://i.pravatar.cc/150?u=0'),
+                                    image: NetworkImage(
+                                      'https://i.pravatar.cc/150?u=0',
+                                    ),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -239,59 +252,76 @@ class _HomePageState extends State<HomePage> {
                   return RepaintBoundary(
                     child: Padding(
                       padding: const EdgeInsets.only(right: 16),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFFD96FF8),
-                                  Color(0xFF69F0AE),
-                                ], // Neon Purple to Green
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.black, width: 2),
-                              ),
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    user['avatar'].toString().startsWith('http')
-                                    ? NetworkImage(user['avatar'])
-                                    : null,
-                                backgroundColor: Colors.deepPurple.shade900,
-                                child: user['avatar'].toString().startsWith('http')
-                                    ? null
-                                    : Text(
-                                        user['initials'] ??
-                                            user['name'].toString().substring(0, 1),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
+                      child:
+                          Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFFD96FF8),
+                                          Color(0xFF69F0AE),
+                                        ], // Neon Purple to Green
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                    child: Container(
+                                      width: 56,
+                                      height: 56,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 2,
                                         ),
                                       ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            user['name'].split(' ')[0], // First name only
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ],
-                      ).animate().fadeIn(delay: (index * 100).ms).slideX(begin: 0.2),
+                                      child: CircleAvatar(
+                                        backgroundImage:
+                                            user['avatar']
+                                                .toString()
+                                                .startsWith('http')
+                                            ? NetworkImage(user['avatar'])
+                                            : null,
+                                        backgroundColor:
+                                            Colors.deepPurple.shade900,
+                                        child:
+                                            user['avatar']
+                                                .toString()
+                                                .startsWith('http')
+                                            ? null
+                                            : Text(
+                                                user['initials'] ??
+                                                    user['name']
+                                                        .toString()
+                                                        .substring(0, 1),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    user['name'].split(
+                                      ' ',
+                                    )[0], // First name only
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ],
+                              )
+                              .animate()
+                              .fadeIn(delay: (index * 100).ms)
+                              .slideX(begin: 0.2),
                     ),
                   );
                 },
@@ -316,7 +346,10 @@ class _HomePageState extends State<HomePage> {
                       final chat = chats[index];
                       return RepaintBoundary(
                         child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.05),
                             // Glassy effect
@@ -344,12 +377,18 @@ class _HomePageState extends State<HomePage> {
                                         width: 55,
                                         height: 55,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(18),
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
                                           // Squircle
                                           image:
-                                              chat['avatar'].toString().startsWith('http')
+                                              chat['avatar']
+                                                  .toString()
+                                                  .startsWith('http')
                                               ? DecorationImage(
-                                                  image: NetworkImage(chat['avatar']),
+                                                  image: NetworkImage(
+                                                    chat['avatar'],
+                                                  ),
                                                   fit: BoxFit.cover,
                                                 )
                                               : null,
@@ -357,14 +396,15 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         child: Center(
                                           child:
-                                              chat['avatar'].toString().startsWith('http')
+                                              chat['avatar']
+                                                  .toString()
+                                                  .startsWith('http')
                                               ? null
                                               : Text(
                                                   (chat['initials'] ??
-                                                      chat['name'].toString().substring(
-                                                        0,
-                                                        1,
-                                                      )),
+                                                      chat['name']
+                                                          .toString()
+                                                          .substring(0, 1)),
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold,
@@ -405,7 +445,8 @@ class _HomePageState extends State<HomePage> {
                                   // Content
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
@@ -462,26 +503,34 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             if (chat['unread'] > 0)
                                               Container(
-                                                margin: const EdgeInsets.only(left: 8),
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                  vertical: 4,
+                                                margin: const EdgeInsets.only(
+                                                  left: 8,
                                                 ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4,
+                                                    ),
                                                 decoration: BoxDecoration(
-                                                  gradient: const LinearGradient(
-                                                    colors: [
-                                                      Color(0xFFD96FF8),
-                                                      Color(0xFF6A1B9A),
-                                                    ],
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(10),
+                                                  gradient:
+                                                      const LinearGradient(
+                                                        colors: [
+                                                          Color(0xFFD96FF8),
+                                                          Color(0xFF6A1B9A),
+                                                        ],
+                                                      ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                   boxShadow: [
                                                     BoxShadow(
                                                       color: const Color(
                                                         0xFFD96FF8,
                                                       ).withValues(alpha: 0.4),
                                                       blurRadius: 4,
-                                                      offset: const Offset(0, 2),
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -516,91 +565,105 @@ class _HomePageState extends State<HomePage> {
         extendBody: true,
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(35),
-            child: BackdropFilter(
-              filter: dart_ui.ImageFilter.blur(
-                sigmaX: 10,
-                sigmaY: 10,
-              ), // Liquid glass blur
-              child: Container(
-                height: 70,
-                decoration: BoxDecoration(
-                  // Gradient for "glossy" look
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.15),
-                      Colors.white.withValues(alpha: 0.05),
-                    ],
-                  ),
-                  color: const Color(0xff0A1832).withValues(alpha: 0.3),
-                  // More transparent for glass
-                  borderRadius: BorderRadius.circular(35),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    width: 1.5,
-                  ), // Slightly thicker border for "glass edge"
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(_navItems.length, (index) {
-                    final isSelected = _selectedIndex == index;
-                    final item = _navItems[index];
-                    return GestureDetector(
-                      onTap: () => setState(() => _selectedIndex = index),
-                      child: AnimatedContainer(
-                        duration: 250.ms,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: isSelected
-                            ? BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                ),
-                              )
-                            : const BoxDecoration(color: Colors.transparent),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              isSelected
-                                  ? (item['activeIcon'] as IconData)
-                                  : (item['icon'] as IconData),
-                              key: ValueKey(isSelected),
-                              color: isSelected ? Colors.white : Colors.grey.shade300,
-                              size: 24,
-                            ),
-                            if (isSelected) ...[
-                              const SizedBox(width: 8),
-                              Text(
-                                item['label'],
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12,
-                                ),
-                              ).animate().fadeIn(duration: 200.ms),
-                            ],
-                          ],
-                        ),
+          child:
+              ClipRRect(
+                borderRadius: BorderRadius.circular(35),
+                child: BackdropFilter(
+                  filter: dart_ui.ImageFilter.blur(
+                    sigmaX: 10,
+                    sigmaY: 10,
+                  ), // Liquid glass blur
+                  child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                      // Gradient for "glossy" look
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.15),
+                          Colors.white.withValues(alpha: 0.05),
+                        ],
                       ),
-                    );
-                  }),
+                      color: const Color(0xff0A1832).withValues(alpha: 0.3),
+                      // More transparent for glass
+                      borderRadius: BorderRadius.circular(35),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        width: 1.5,
+                      ), // Slightly thicker border for "glass edge"
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(_navItems.length, (index) {
+                        final isSelected = _selectedIndex == index;
+                        final item = _navItems[index];
+                        return GestureDetector(
+                          onTap: () => setState(() => _selectedIndex = index),
+                          child: AnimatedContainer(
+                            duration: 250.ms,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: isSelected
+                                ? BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                    ),
+                                  )
+                                : const BoxDecoration(
+                                    color: Colors.transparent,
+                                  ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isSelected
+                                      ? (item['activeIcon'] as IconData)
+                                      : (item['icon'] as IconData),
+                                  key: ValueKey(isSelected),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.grey.shade300,
+                                  size: 24,
+                                ),
+                                if (isSelected) ...[
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    item['label'],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 12,
+                                    ),
+                                  ).animate().fadeIn(duration: 200.ms),
+                                ],
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
                 ),
+              ).animate().slideY(
+                begin: 1,
+                duration: 500.ms,
+                curve: Curves.easeOutBack,
               ),
-            ),
-          ).animate().slideY(begin: 1, duration: 500.ms, curve: Curves.easeOutBack),
         ),
       ),
     );
