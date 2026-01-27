@@ -1,12 +1,12 @@
-import 'package:chat_app/utils/custom_page_route.dart';
-import 'package:flutter/cupertino.dart';
+import "package:chat_app/utils/custom_page_route.dart";
+import "package:flutter/cupertino.dart";
 
-import '../../screens/auth/sign_in.dart';
-import '../../screens/auth/sign_up.dart';
-import '../../screens/core/splash_screen.dart';
-import '../../screens/chat/chat_screen.dart';
-import '../../screens/core/home_page.dart';
-import '../../screens/onboarding/onboarding_page.dart';
+import "../../screens/auth/sign_in.dart";
+import "../../screens/auth/sign_up.dart";
+import "../../screens/core/splash_screen.dart";
+import "../../screens/chat/chat_screen.dart";
+import "../../screens/core/home_page.dart";
+import "../../screens/onboarding/onboarding_page.dart";
 
 class AppRoutes {
   static const String ROUTE_SPLASHPAGE = "/"; // Root route
@@ -39,10 +39,7 @@ class AppRoutes {
       case ROUTE_HOMEPAGE:
         return FadePageRoute(child: const HomePage(), settings: settings);
       case ROUTE_CHATSCREEN:
-        return SharedAxisPageRoute(
-          child: const ChatScreen(),
-          settings: settings,
-        );
+        return SharedAxisPageRoute(child: const ChatScreen(), settings: settings);
       default:
         return null;
     }

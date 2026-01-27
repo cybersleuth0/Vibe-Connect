@@ -9,5 +9,5 @@ class RegisterSuccessState extends RegisterState {}
 class RegisterFailureState extends RegisterState {
   final String error;
 
-  RegisterFailureState({this.error = 'An error occurred'});
+  RegisterFailureState({this.error = "An error occurred"});
 }

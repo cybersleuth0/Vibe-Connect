@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 // 1. Fade transition - Smooth and eliminates white flash
 class FadePageRoute extends PageRouteBuilder {
@@ -29,15 +29,9 @@ class SlideRightPageRoute extends PageRouteBuilder {
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
+          return SlideTransition(position: animation.drive(tween), child: child);
         },
       );
 }
@@ -56,15 +50,9 @@ class SlideUpPageRoute extends PageRouteBuilder {
           const end = Offset.zero;
           const curve = Curves.easeOutCubic;
 
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
+          return SlideTransition(position: animation.drive(tween), child: child);
         },
       );
 }
@@ -80,9 +68,10 @@ class ScalePageRoute extends PageRouteBuilder {
         pageBuilder: (context, animation, secondaryAnimation) => child,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return ScaleTransition(
-            scale: Tween<double>(begin: 0.8, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-            ),
+            scale: Tween<double>(
+              begin: 0.8,
+              end: 1.0,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
             child: FadeTransition(opacity: animation, child: child),
           );
         },
@@ -100,9 +89,10 @@ class RotationPageRoute extends PageRouteBuilder {
         pageBuilder: (context, animation, secondaryAnimation) => child,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return RotationTransition(
-            turns: Tween<double>(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeInOut),
-            ),
+            turns: Tween<double>(
+              begin: 0.0,
+              end: 1.0,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut)),
             child: FadeTransition(opacity: animation, child: child),
           );
         },
@@ -123,10 +113,7 @@ class SlideFadePageRoute extends PageRouteBuilder {
           const end = Offset.zero;
           const curve = Curves.easeInOutCubic;
 
-          var slideTween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
+          final slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
           return SlideTransition(
             position: animation.drive(slideTween),
@@ -147,27 +134,18 @@ class SharedAxisPageRoute extends PageRouteBuilder {
         pageBuilder: (context, animation, secondaryAnimation) => child,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           // Scale down the old page
-          final secondaryScaleAnimation = Tween<double>(
-            begin: 1.0,
-            end: 0.9,
-          ).animate(secondaryAnimation);
+          final secondaryScaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(secondaryAnimation);
 
           // Slide in the new page
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
 
-          var slideTween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: Curves.easeInOutCubic));
+          final slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.easeInOutCubic));
 
           return Stack(
             children: [
               // Old page scaling down
-              ScaleTransition(
-                scale: secondaryScaleAnimation,
-                child: Container(),
-              ),
+              ScaleTransition(scale: secondaryScaleAnimation, child: Container()),
               // New page sliding in
               SlideTransition(
                 position: animation.drive(slideTween),

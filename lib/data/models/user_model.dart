@@ -26,32 +26,32 @@ class UserModel {
   // Convert UserModel to a map for Firestore
   Map<String, dynamic> toDoc() {
     return {
-      'userId': userId,
-      'name': name,
-      'email': email,
-      'mobNo': mobNo,
-      'gender': gender,
-      'createdAt': createdAt,
-      'isOnline': isOnline,
-      'accountStatus': accountStatus,
-      'profilePic': profilePic,
-      'profileStatus': profileStatus,
+      "userId": userId,
+      "name": name,
+      "email": email,
+      "mobNo": mobNo,
+      "gender": gender,
+      "createdAt": createdAt,
+      "isOnline": isOnline,
+      "accountStatus": accountStatus,
+      "profilePic": profilePic,
+      "profileStatus": profileStatus,
     };
   }
 
   // Factory constructor to create a UserModel from a Firestore document
   factory UserModel.fromDoc(Map<String, dynamic> doc) {
     return UserModel(
-      userId: doc['userId'],
-      name: doc['name'],
-      email: doc['email'],
-      mobNo: doc['mobNo'],
-      gender: doc['gender'],
-      createdAt: doc['createdAt'],
-      isOnline: doc['isOnline'] ?? false,
-      accountStatus: doc['accountStatus'] ?? 1,
-      profilePic: doc['profilePic'] ?? "",
-      profileStatus: doc['profileStatus'] ?? 1,
+      userId: doc["userId"],
+      name: doc["name"],
+      email: doc["email"],
+      mobNo: doc["mobNo"],
+      gender: doc["gender"],
+      createdAt: doc["createdAt"],
+      isOnline: doc["isOnline"] ?? false,
+      accountStatus: doc["accountStatus"] ?? 1,
+      profilePic: doc["profilePic"] ?? "",
+      profileStatus: doc["profileStatus"] ?? 1,
     );
   }
 }
