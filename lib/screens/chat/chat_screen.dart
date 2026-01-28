@@ -60,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                         color: Colors.deepPurple.shade800,
                         image: avatar.toString().startsWith("http")
@@ -77,8 +77,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                     ),
                     Positioned(
-                      right: 0,
-                      bottom: 0,
+                      top: -2,
+                      right: -2,
                       child: Container(
                         width: 12,
                         height: 12,

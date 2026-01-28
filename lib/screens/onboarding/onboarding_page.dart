@@ -13,7 +13,7 @@ class OnBoardingPage extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xff43116A), Color(0xff0A1832)], // Deep Purple to Dark Blue (Harmonized)
+          colors: [Color(0xff43116A), Color(0xff0A1832)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -24,6 +24,7 @@ class OnBoardingPage extends StatelessWidget {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: AppBar(
+            automaticallyImplyLeading: false,
             systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,

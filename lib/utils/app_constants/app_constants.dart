@@ -1,5 +1,11 @@
+import "package:chat_app/screens/auth/login_cubit/login_cubit.dart";
+import "package:chat_app/screens/auth/profile_setup.dart";
+import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
 import "package:chat_app/utils/custom_page_route.dart";
 import "package:flutter/cupertino.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "../../data/remote/repository/firebase_repository.dart";
+import "../../screens/auth/sign_up_cubit/sign_up_cubit.dart";
 
 import "../../screens/auth/sign_in.dart";
 import "../../screens/auth/sign_up.dart";
@@ -13,6 +19,7 @@ class AppRoutes {
   static const String ROUTE_ONBOARDINGPAGE = "/welcome";
   static const String ROUTE_SIGNINPAGE = "/auth/login";
   static const String ROUTE_SIGNUPPAGE = "/auth/register";
+  static const String ROUTE_PROFILE_SETUP = "/auth/profile_setup";
   static const String ROUTE_HOMEPAGE = "/dashboard";
   static const String ROUTE_CHATSCREEN = "/chat";
 
@@ -33,13 +40,39 @@ class AppRoutes {
       case ROUTE_ONBOARDINGPAGE:
         return FadePageRoute(child: const OnBoardingPage(), settings: settings);
       case ROUTE_SIGNINPAGE:
-        return SlideUpPageRoute(child: const SignInPage(), settings: settings);
+        return SlideUpPageRoute(
+          child: BlocProvider(
+            create: (context) => LoginCubit(firebaseRepository: FirebaseRepository()),
+            child: const SignInPage(),
+          ),
+          settings: settings,
+        );
       case ROUTE_SIGNUPPAGE:
-        return SlideUpPageRoute(child: const SignUpPage(), settings: settings);
+        return SlideUpPageRoute(
+          child: BlocProvider(
+            create: (context) => RegisterCubit(firebaseRepository: FirebaseRepository()),
+            child: const SignUpPage(),
+          ),
+          settings: settings,
+        );
+      case ROUTE_PROFILE_SETUP:
+        return SlideUpPageRoute(
+          child: BlocProvider(
+            create: (context) => ProfileSetupCubit(firebaseRepository: FirebaseRepository()),
+            child: const ProfileSetupPage(),
+          ),
+          settings: settings,
+        );
       case ROUTE_HOMEPAGE:
-        return FadePageRoute(child: const HomePage(), settings: settings);
+        return FadePageRoute(
+          child: BlocProvider(
+            create: (context) => LoginCubit(firebaseRepository: FirebaseRepository()),
+            child: const HomePage(),
+          ),
+          settings: settings,
+        );
       case ROUTE_CHATSCREEN:
-        return SharedAxisPageRoute(child: const ChatScreen(), settings: settings);
+        return CupertinoPageRoute(builder: (context) => const ChatScreen(), settings: settings);
       default:
         return null;
     }

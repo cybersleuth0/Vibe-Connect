@@ -1,7 +1,10 @@
 import "dart:ui";
+import "package:chat_app/screens/auth/login_cubit/login_cubit.dart";
+import "package:chat_app/screens/auth/login_cubit/login_state.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
 
 import "../../../utils/app_constants/app_constants.dart";
@@ -19,7 +22,6 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  bool _isLoading = false;
   int _shakeTrigger = 0;
 
   @override
@@ -29,19 +31,11 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  void _handleLogin(BuildContext context) {
     FocusManager.instance.primaryFocus?.unfocus();
 
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      await Future.delayed(const Duration(milliseconds: 1500));
-
-      if (!mounted) return;
-
-      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.ROUTE_HOMEPAGE, (route) => false);
+      context.read<LoginCubit>().login(email: _emailController.text, password: _passwordController.text);
     } else {
       setState(() {
         _shakeTrigger++;
@@ -396,7 +390,7 @@ class _SignInPageState extends State<SignInPage> {
                                 onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                               ),
                             ),
-                            onFieldSubmitted: (_) => _handleLogin(),
+                            onFieldSubmitted: (_) => _handleLogin(context),
                             validator: (value) {
                               if (value == null || value.isEmpty) return "Password is required";
                               if (value.length < 6) return "Password must be at least 6 characters";
@@ -407,37 +401,56 @@ class _SignInPageState extends State<SignInPage> {
                           SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
                           // Login Button - Clean & Elegant
-                          ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  backgroundColor: Colors.white, // Clean white button
-                                  foregroundColor: const Color(0xff0A1832), // Dark text for contrast
-                                  elevation: 0, // No shadow for flat, modern look
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-                                ),
-                                onPressed: _isLoading ? null : _handleLogin,
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 24,
-                                        width: 24,
-                                        child: CircularProgressIndicator(color: Color(0xff0A1832), strokeWidth: 2.5),
-                                      )
-                                    : const Text(
-                                        "Log in",
-                                        style: TextStyle(
-                                          fontFamily: "Poppins",
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                              )
-                              .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                              .shimmer(
-                                duration: 3000.ms,
-                                delay: 2000.ms,
-                                color: Colors.grey.shade200.withValues(alpha: 0.3),
-                              ),
+                          BlocConsumer<LoginCubit, LoginState>(
+                            listener: (context, state) {
+                              if (state is LoginSuccess) {
+                                Navigator.pushNamedAndRemoveUntil(context, AppRoutes.ROUTE_HOMEPAGE, (route) => false);
+                              } else if (state is LoginFailure) {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text(state.error), backgroundColor: Colors.red));
+                              }
+                            },
+                            builder: (context, state) {
+                              final bool isLoading = state is LoginLoading;
+                              return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      backgroundColor: Colors.white, // Clean white button
+                                      disabledBackgroundColor: Colors.white,
+                                      disabledForegroundColor: const Color(0xff0A1832),
+                                      foregroundColor: const Color(0xff0A1832), // Dark text for contrast
+                                      elevation: 0, // No shadow for flat, modern look
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                                    ),
+                                    onPressed: isLoading ? null : () => _handleLogin(context),
+                                    child: isLoading
+                                        ? const SizedBox(
+                                            height: 24,
+                                            width: 24,
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xff0A1832),
+                                              strokeWidth: 2.5,
+                                            ),
+                                          )
+                                        : const Text(
+                                            "Log in",
+                                            style: TextStyle(
+                                              fontFamily: "Poppins",
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1,
+                                            ),
+                                          ),
+                                  )
+                                  .animate(onPlay: (controller) => controller.repeat(reverse: true))
+                                  .shimmer(
+                                    duration: 3000.ms,
+                                    delay: 2000.ms,
+                                    color: Colors.grey.shade200.withValues(alpha: 0.3),
+                                  );
+                            },
+                          ),
 
                           const SizedBox(height: 20),
 
