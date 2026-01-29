@@ -1,6 +1,7 @@
 import "package:chat_app/screens/auth/login_cubit/login_cubit.dart";
 import "package:chat_app/screens/auth/profile_setup.dart";
 import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
+import "package:chat_app/screens/chat/chat_cubit/chat_cubit.dart";
 import "package:chat_app/utils/custom_page_route.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -72,7 +73,13 @@ class AppRoutes {
           settings: settings,
         );
       case ROUTE_CHATSCREEN:
-        return CupertinoPageRoute(builder: (context) => const ChatScreen(), settings: settings);
+        return SlideFadePageRoute(
+          child: BlocProvider(
+            create: (context) => ChatCubit(firebaseRepository: FirebaseRepository()),
+            child: const ChatScreen(),
+          ),
+          settings: settings,
+        );
       default:
         return null;
     }

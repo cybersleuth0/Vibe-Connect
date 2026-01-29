@@ -70,24 +70,38 @@ class _HomePageState extends State<HomePage> {
             title: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: _isSearching
-                  ? TextField(
-                      controller: _searchController,
-                      autofocus: true,
-                      onChanged: (value) => setState(() {}),
-                      style: const TextStyle(color: Colors.white, fontFamily: "Poppins"),
-                      decoration: InputDecoration(
-                        hintText: "Search chats...",
-                        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontFamily: "Poppins"),
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.search, color: Colors.white54),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              _isSearching = false;
-                              _searchController.clear();
-                            });
-                          },
+                  ? Container(
+                      height: 45,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        autofocus: true,
+                        onChanged: (value) => setState(() {}),
+                        style: const TextStyle(color: Colors.white, fontFamily: "Poppins", fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: "Search conversations...",
+                          hintStyle: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.4),
+                            fontFamily: "Poppins",
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(Icons.search, color: Colors.white54, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white, size: 18),
+                            onPressed: () {
+                              setState(() {
+                                _isSearching = false;
+                                _searchController.clear();
+                              });
+                            },
+                          ),
                         ),
                       ),
                     )
@@ -251,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     // Story/Status (Top Horizontal List) - Keeping it for visual flair
                     SizedBox(
-                      height: 110,
+                      height: 125,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -305,48 +319,53 @@ class _HomePageState extends State<HomePage> {
                           final avatarUrl =
                               "https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name ?? 'User')}&background=random";
 
-                          return RepaintBoundary(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 16),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(2.5),
-                                    decoration: const BoxDecoration(
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFFD96FF8), Color(0xFF69F0AE)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFFD96FF8).withValues(alpha: 0.3),
+                                        blurRadius: 10,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Container(
+                                    width: 62,
+                                    height: 62,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff0A1832),
                                       shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: [Color(0xFFD96FF8), Color(0xFF69F0AE)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
+                                      border: Border.all(color: const Color(0xff0A1832), width: 3),
                                     ),
-                                    child: Container(
-                                      width: 55,
-                                      height: 55,
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.black, width: 2),
-                                      ),
-                                      child: Hero(
-                                        tag: "avatar_story_${user.userId}",
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(avatarUrl),
-                                          backgroundColor: Colors.deepPurple.shade900,
-                                        ),
-                                      ),
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(avatarUrl),
+                                      backgroundColor: Colors.deepPurple.shade900,
                                     ),
                                   ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    user.name != null && user.name!.isNotEmpty
-                                        ? user.name![0].toUpperCase() + user.name!.substring(1).split(" ")[0]
-                                        : "User",
-                                    style: const TextStyle(color: Colors.white, fontSize: 12, fontFamily: "Poppins"),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  user.name != null && user.name!.isNotEmpty ? user.name!.split(" ")[0] : "User",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: "Poppins",
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ).animate().fadeIn(delay: (index * 50).ms).slideX(begin: 0.2),
-                            ),
+                                ),
+                              ],
+                            ).animate().fadeIn(delay: (index * 50).ms).scale(begin: const Offset(0.8, 0.8)),
                           );
                         },
                       ),
@@ -359,164 +378,179 @@ class _HomePageState extends State<HomePage> {
                           topLeft: Radius.circular(35),
                           topRight: Radius.circular(35),
                         ),
-                        child: BackdropFilter(
-                          filter: dart_ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff0A1832).withValues(alpha: 0.4),
-                              border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.25), width: 1)),
-                            ),
-                            child: ListView.builder(
-                              padding: const EdgeInsets.only(top: 20, bottom: 100),
-                              itemCount: users.length,
-                              itemBuilder: (context, index) {
-                                final user = users[index];
-                                // Basic filtering logic
-                                if (_isSearching &&
-                                    !(user.name ?? "").toLowerCase().contains(_searchController.text.toLowerCase())) {
-                                  return const SizedBox.shrink();
-                                }
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff0A1832).withValues(alpha: 0.8),
+                            border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1)),
+                          ),
+                          child: ListView.builder(
+                            padding: const EdgeInsets.only(top: 10, bottom: 100),
+                            itemCount: users.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Messages",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "Poppins",
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFD96FF8).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(color: const Color(0xFFD96FF8).withValues(alpha: 0.2)),
+                                        ),
+                                        child: Text(
+                                          "${users.length} Active",
+                                          style: const TextStyle(
+                                            color: Color(0xFFD96FF8),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              final user = users[index - 1];
+                              // Basic filtering logic
+                              if (_isSearching &&
+                                  !(user.name ?? "").toLowerCase().contains(_searchController.text.toLowerCase())) {
+                                return const SizedBox.shrink();
+                              }
 
-                                final avatarUrl =
-                                    "https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name ?? 'User')}&background=random";
+                              final avatarUrl =
+                                  "https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name ?? 'User')}&background=random";
 
-                                return RepaintBoundary(
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
+                              return Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                    child: GestureDetector(
                                       onTap: () {
+                                        HapticFeedback.lightImpact();
                                         Navigator.pushNamed(
                                           context,
                                           AppRoutes.ROUTE_CHATSCREEN,
                                           arguments: {"name": user.name, "avatar": avatarUrl, "id": user.userId},
                                         );
                                       },
-                                      splashColor: Colors.white.withValues(alpha: 0.1),
-                                      highlightColor: Colors.white.withValues(alpha: 0.05),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                        child: Container(
-                                          padding: const EdgeInsets.only(bottom: 12),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(width: 1, color: Colors.white.withValues(alpha: 0.08)),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // Hero Avatar
-                                              Hero(
-                                                tag: "avatar_chat_${user.userId}",
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      width: 58,
-                                                      height: 58,
+                                      behavior: HitTestBehavior.opaque,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.05),
+                                          borderRadius: BorderRadius.circular(24),
+                                          border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            // Avatar with Online Status
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  width: 54,
+                                                  height: 54,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(18),
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(avatarUrl),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black.withValues(alpha: 0.2),
+                                                        blurRadius: 10,
+                                                        offset: const Offset(0, 4),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                if (user.isOnline)
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      width: 14,
+                                                      height: 14,
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(avatarUrl),
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                        color: Colors.deepPurple.shade800,
+                                                        color: const Color(0xFF69F0AE),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(color: const Color(0xff0A1832), width: 2),
                                                         boxShadow: [
                                                           BoxShadow(
-                                                            color: Colors.black.withValues(alpha: 0.2),
-                                                            blurRadius: 8,
-                                                            offset: const Offset(0, 4),
+                                                            color: const Color(0xFF69F0AE).withValues(alpha: 0.5),
+                                                            blurRadius: 6,
+                                                            spreadRadius: 1,
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                    if (user.isOnline)
-                                                      Positioned(
-                                                        top: -2,
-                                                        right: -2,
-                                                        child: Container(
-                                                          width: 16,
-                                                          height: 16,
-                                                          decoration: BoxDecoration(
-                                                            color: const Color(0xFF69F0AE),
-                                                            shape: BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: const Color(0xff0A1832),
-                                                              width: 2.5,
-                                                            ),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: const Color(0xFF69F0AE).withValues(alpha: 0.6),
-                                                                blurRadius: 8,
-                                                                spreadRadius: 1,
-                                                              ),
-                                                            ],
-                                                          ),
+                                                  ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 16),
+                                            // Content
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        user.name ?? "User",
+                                                        style: const TextStyle(
+                                                          fontWeight: FontWeight.w600,
+                                                          fontSize: 16,
+                                                          fontFamily: "Poppins",
+                                                          color: Colors.white,
+                                                          letterSpacing: 0.2,
                                                         ),
                                                       ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(width: 16),
-                                              // Content
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          user.name != null && user.name!.isNotEmpty
-                                                              ? user.name![0].toUpperCase() + user.name!.substring(1)
-                                                              : "Name",
-                                                          style: const TextStyle(
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: 16,
-                                                            fontFamily: "Poppins",
-                                                            color: Colors.white,
-                                                            letterSpacing: 0.3,
-                                                          ),
+                                                      Text(
+                                                        "Now",
+                                                        style: TextStyle(
+                                                          color: Colors.white.withValues(alpha: 0.4),
+                                                          fontSize: 11,
+                                                          fontFamily: "Poppins",
+                                                          fontWeight: FontWeight.w400,
                                                         ),
-                                                        Text(
-                                                          "Now", // Placeholder for actual last message time
-                                                          style: TextStyle(
-                                                            color: Colors.white.withValues(alpha: 0.5),
-                                                            fontSize: 11,
-                                                            fontFamily: "Poppins",
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 4),
+                                                  Text(
+                                                    user.email ?? "Tap to start vibing...",
+                                                    style: TextStyle(
+                                                      color: Colors.white.withValues(alpha: 0.6),
+                                                      fontSize: 13,
+                                                      fontFamily: "Poppins",
+                                                      fontWeight: FontWeight.w400,
                                                     ),
-                                                    const SizedBox(height: 6),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            user.email ?? "Tap to chat", // Placeholder
-                                                            style: TextStyle(
-                                                              color: Colors.white.withValues(alpha: 0.6),
-                                                              fontSize: 13,
-                                                              fontFamily: "Poppins",
-                                                              fontWeight: FontWeight.normal,
-                                                            ),
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ).animate().fadeIn(duration: 400.ms, delay: (index * 50).ms).slideY(begin: 0.1),
-                                );
-                              },
-                            ),
+                                  )
+                                  .animate()
+                                  .fadeIn(duration: 400.ms, delay: (index * 50).ms)
+                                  .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut);
+                            },
                           ),
                         ),
                       ),
@@ -534,7 +568,7 @@ class _HomePageState extends State<HomePage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: BackdropFilter(
-                filter: dart_ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                filter: dart_ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                 child: Container(
                   height: 72,
                   decoration: BoxDecoration(
@@ -577,11 +611,24 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                isSelected ? (item["activeIcon"] as IconData) : (item["icon"] as IconData),
-                                key: ValueKey(isSelected),
-                                color: isSelected ? Colors.white : Colors.grey.shade400,
-                                size: 26,
+                              Container(
+                                decoration: isSelected
+                                    ? BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.white.withValues(alpha: 0.3),
+                                            blurRadius: 12,
+                                            spreadRadius: -2,
+                                          ),
+                                        ],
+                                      )
+                                    : null,
+                                child: Icon(
+                                  isSelected ? (item["activeIcon"] as IconData) : (item["icon"] as IconData),
+                                  key: ValueKey(isSelected),
+                                  color: isSelected ? Colors.white : Colors.grey.shade400,
+                                  size: 26,
+                                ),
                               ),
                               if (isSelected) ...[
                                 const SizedBox(width: 8),
