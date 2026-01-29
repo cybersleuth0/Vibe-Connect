@@ -8,6 +8,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "../../data/models/message_model.dart"; // Added import
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -31,6 +32,13 @@ class _ChatScreenState extends State<ChatScreen> {
       currentTargetId = targetUserId;
       context.read<ChatCubit>().initChatRoom(targetUserId);
     }
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -196,8 +204,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                       itemCount: messages.length,
                                       itemBuilder: (context, index) {
                                         final msg = messages[index].data();
-                                        final isMe = msg["senderId"] == currentUserId;
-                                        final time = (msg["createdon"] as Timestamp?)?.toDate();
+                                        final isMe = msg[MessageModel.KEY_SENDER_ID] == currentUserId;
+                                        final time = (msg[MessageModel.KEY_CREATION_DATE] as Timestamp?)?.toDate();
                                         final timeString = time != null
                                             ? "${time.hour}:${time.minute.toString().padLeft(2, '0')}"
                                             : "";
@@ -256,7 +264,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         ),
                                                       ),
                                                       child: Text(
-                                                        msg["text"] ?? "",
+                                                        msg[MessageModel.KEY_TEXT] ?? "",
                                                         style: const TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 15,
@@ -335,6 +343,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                             border: InputBorder.none,
                                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                           ),
+                                          textInputAction: TextInputAction.done,
                                           onSubmitted: (value) {
                                             if (value.trim().isNotEmpty) {
                                               context.read<ChatCubit>().sendMessage(value.trim());

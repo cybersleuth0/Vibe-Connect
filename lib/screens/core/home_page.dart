@@ -39,6 +39,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
@@ -672,6 +678,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ).animate().slideY(begin: 1, duration: 600.ms, curve: Curves.easeOutBack),
           ),
+          floatingActionButton: FloatingActionButton(
+            tooltip: "New Message",
+            backgroundColor: const Color(0xFFD96FF8),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.ROUTE_SELECT_USER_TO_CHAT_SCREEN);
+              HapticFeedback.lightImpact();
+            },
+            child: Icon(Icons.add, color: Colors.white.withValues(alpha: 0.8)),
+          ).animate().slideY(begin: 1, duration: 600.ms, curve: Curves.easeOutBack),
         ),
       ),
     );

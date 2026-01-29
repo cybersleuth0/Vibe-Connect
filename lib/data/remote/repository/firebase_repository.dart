@@ -102,7 +102,7 @@ class FirebaseRepository {
   }
 
   // 2. Send a Message and update the room's "Last Message" preview
-  Future<void> sendMessage(String chatroomId, MessageModel message) async {
+  Future<void> sendMessage({required String chatroomId, required MessageModel message}) async {
     try {
       // Create a reference for a new message document (generates a random unique ID)
       // Path: chatroom -> {chatroomId} -> messages -> {random_msg_id}

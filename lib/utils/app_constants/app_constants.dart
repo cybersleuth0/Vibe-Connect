@@ -5,14 +5,15 @@ import "package:chat_app/screens/chat/chat_cubit/chat_cubit.dart";
 import "package:chat_app/utils/custom_page_route.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "../../data/remote/repository/firebase_repository.dart";
-import "../../screens/auth/sign_up_cubit/sign_up_cubit.dart";
 
+import "../../data/remote/repository/firebase_repository.dart";
 import "../../screens/auth/sign_in.dart";
 import "../../screens/auth/sign_up.dart";
-import "../../screens/core/splash_screen.dart";
+import "../../screens/auth/sign_up_cubit/sign_up_cubit.dart";
 import "../../screens/chat/chat_screen.dart";
 import "../../screens/core/home_page.dart";
+import "../../screens/core/select_user_to_chat.dart";
+import "../../screens/core/splash_screen.dart";
 import "../../screens/onboarding/onboarding_page.dart";
 
 class AppRoutes {
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String ROUTE_PROFILE_SETUP = "/auth/profile_setup";
   static const String ROUTE_HOMEPAGE = "/dashboard";
   static const String ROUTE_CHATSCREEN = "/chat";
+  static const String ROUTE_SELECT_USER_TO_CHAT_SCREEN = "/select-user-to-chat";
 
   // OLD METHOD - Not used anymore but kept for reference
   // static Map<String, WidgetBuilder> getRoutes() => {
@@ -80,6 +82,8 @@ class AppRoutes {
           ),
           settings: settings,
         );
+      case ROUTE_SELECT_USER_TO_CHAT_SCREEN:
+        return SlideRightPageRoute(child: const SelectUserToChat(), settings: settings);
       default:
         return null;
     }

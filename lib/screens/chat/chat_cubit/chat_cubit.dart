@@ -48,7 +48,7 @@ class ChatCubit extends Cubit<ChatState> {
     );
 
     try {
-      await firebaseRepository.sendMessage(currentChatRoomId!, message);
+      await firebaseRepository.sendMessage(chatroomId: currentChatRoomId!, message: message);
     } catch (e) {
       // Don't emit error state here as it would replace the chat UI
       // Use a separate side-effect mechanism or just log it
