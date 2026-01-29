@@ -73,7 +73,7 @@ class AppRoutes {
           settings: settings,
         );
       case ROUTE_CHATSCREEN:
-        return SlideFadePageRoute(
+        return SlideRightPageRoute(
           child: BlocProvider(
             create: (context) => ChatCubit(firebaseRepository: FirebaseRepository()),
             child: const ChatScreen(),

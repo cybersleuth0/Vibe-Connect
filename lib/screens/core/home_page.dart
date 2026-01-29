@@ -150,52 +150,49 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ).animate().scale(delay: 400.ms, duration: 400.ms),
-              PopupMenuButton(
-                position: PopupMenuPosition.under,
-                offset: const Offset(0, 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                color: const Color(0xff0A1832).withValues(alpha: 0.95),
-                elevation: 8,
-                onSelected: (value) {
-                  if (value == "logout") {
-                    context.read<LoginCubit>().logout();
-                  }
-                },
-                itemBuilder: (_) {
-                  return [
-                    const PopupMenuItem(
-                      value: "logout",
-                      child: Row(
-                        children: [
-                          Icon(Icons.logout_rounded, color: Color(0xFFD96FF8), size: 20),
-                          SizedBox(width: 12),
-                          Text(
-                            "Logout",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                ),
+                child: PopupMenuButton(
+                  position: PopupMenuPosition.under,
+                  offset: const Offset(0, 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  color: const Color(0xff0A1832).withValues(alpha: 0.95),
+                  elevation: 8,
+                  icon: const Icon(Icons.more_vert_outlined, color: Colors.white),
+                  onSelected: (value) {
+                    if (value == "logout") {
+                      context.read<LoginCubit>().logout();
+                    }
+                  },
+                  itemBuilder: (_) {
+                    return const [
+                      PopupMenuItem(
+                        value: "logout",
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout_rounded, color: Color(0xFFD96FF8), size: 20),
+                            SizedBox(width: 12),
+                            Text(
+                              "Logout",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Poppins",
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ];
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.more_vert_outlined, color: Colors.white),
-                  ),
-                ).animate().scale(delay: 500.ms, duration: 400.ms),
-              ),
+                    ];
+                  },
+                ),
+              ).animate().scale(delay: 500.ms, duration: 400.ms),
             ],
           ),
           body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -284,11 +281,17 @@ class _HomePageState extends State<HomePage> {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
-                                          image: const DecorationImage(
-                                            image: NetworkImage(
-                                              "https://ui-avatars.com/api/?name=You&background=random",
-                                            ),
+                                        ),
+                                        child: ClipOval(
+                                          child: Image.network(
+                                            "https://ui-avatars.com/api/?name=You&background=random&format=png",
                                             fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Container(
+                                                color: Colors.grey.withValues(alpha: 0.3),
+                                                child: const Icon(Icons.person, color: Colors.white),
+                                              );
+                                            },
                                           ),
                                         ),
                                       ),
@@ -348,9 +351,17 @@ class _HomePageState extends State<HomePage> {
                                       shape: BoxShape.circle,
                                       border: Border.all(color: const Color(0xff0A1832), width: 3),
                                     ),
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(avatarUrl),
-                                      backgroundColor: Colors.deepPurple.shade900,
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        "$avatarUrl&format=png",
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: Colors.deepPurple.shade900,
+                                            child: const Icon(Icons.person, color: Colors.white),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -461,10 +472,6 @@ class _HomePageState extends State<HomePage> {
                                                   height: 54,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(18),
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(avatarUrl),
-                                                      fit: BoxFit.cover,
-                                                    ),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.black.withValues(alpha: 0.2),
@@ -472,6 +479,19 @@ class _HomePageState extends State<HomePage> {
                                                         offset: const Offset(0, 4),
                                                       ),
                                                     ],
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(18),
+                                                    child: Image.network(
+                                                      "$avatarUrl&format=png",
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return Container(
+                                                          color: Colors.grey.withValues(alpha: 0.3),
+                                                          child: const Icon(Icons.person, color: Colors.white),
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
                                                 ),
                                                 if (user.isOnline)

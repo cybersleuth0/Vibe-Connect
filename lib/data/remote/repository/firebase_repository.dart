@@ -3,6 +3,7 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 
 import "../../models/message_model.dart";
+import "../../models/chatroom_model.dart";
 
 class FirebaseRepository {
   static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -10,33 +11,27 @@ class FirebaseRepository {
 
   static const String COLLECTION_USERS = "users";
   static const String COLLECTION_CHATROOM = "chatroom";
+  static const String COLLECTION_MESSAGES = "messages";
 
   // User registration
 
   Future<bool> registerUser({required UserModel user, required String password}) async {
     try {
-      print("Creating user in Auth...");
       final userCred = await firebaseAuth.createUserWithEmailAndPassword(email: user.email!, password: password);
 
       if (userCred.user != null) {
-        print("User created in Auth: ${userCred.user?.uid}");
         user.userId = userCred.user!.uid;
         user.createdAt = DateTime.now().toIso8601String();
 
-        print("Saving user to Firestore...");
         await firebaseFirestore.collection(COLLECTION_USERS).doc(userCred.user!.uid).set(user.toDoc());
-        print("User saved to Firestore");
 
         return true; // Return true on success
       } else {
-        print("User creation returned null");
         return false; // Return false if user credential is null
       }
-    } on FirebaseAuthException catch (e) {
-      print("FirebaseAuthException: $e");
+    } on FirebaseAuthException {
       rethrow;
     } catch (e) {
-      print("General Exception: $e");
       rethrow;
     }
   }
@@ -84,6 +79,7 @@ class FirebaseRepository {
 
     // To ensure both users end up in the SAME room, we sort their IDs alphabetically.
     // This way, Ayush_John and John_Ayush both become "Ayush_John".
+
     final List<String> ids = [currentUserId, targetUserId];
     ids.sort();
     final String chatroomId = ids.join("_");
@@ -94,11 +90,11 @@ class FirebaseRepository {
     if (!roomDoc.exists) {
       // If the room doesn't exist, we create it with initial metadata
       await firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId).set({
-        "chatroomId": chatroomId,
-        "participants": ids,
-        "lastMessage": "",
-        "lastMessageTime": FieldValue.serverTimestamp(),
-        "unreadCounts": {currentUserId: 0, targetUserId: 0},
+        ChatRoomModel.KEY_CHATROOM_ID: chatroomId,
+        ChatRoomModel.KEY_PARTICIPANTS: ids,
+        ChatRoomModel.KEY_LAST_MESSAGE: "",
+        ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
+        ChatRoomModel.KEY_UNREAD_COUNTS: {currentUserId: 0, targetUserId: 0},
       });
     }
 
@@ -110,7 +106,12 @@ class FirebaseRepository {
     try {
       // Create a reference for a new message document (generates a random unique ID)
       // Path: chatroom -> {chatroomId} -> messages -> {random_msg_id}
-      final docRef = firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId).collection("messages").doc();
+
+      final docRef = firebaseFirestore
+          .collection(COLLECTION_CHATROOM)
+          .doc(chatroomId)
+          .collection(COLLECTION_MESSAGES)
+          .doc();
 
       // Assign the generated unique ID to the message object
       message.messageId = docRef.id;
@@ -119,14 +120,15 @@ class FirebaseRepository {
       // This ensures data consistency: the message is saved AND the preview is updated.
       final WriteBatch batch = firebaseFirestore.batch();
 
-      // Step A: Save the actual message data in the sub-collection
+      // Step 1: Save the actual message data in the sub-collection
       batch.set(docRef, message.toDoc());
 
-      // Step B: Update the outer ChatRoom document with the latest message text and time.
+      // Step 2: Update the outer ChatRoom document with the latest message text and time.
+
       // This is used to show the "Last Message" on the Home Screen chat list.
       batch.update(firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId), {
-        "lastMessage": message.text,
-        "lastMessageTime": FieldValue.serverTimestamp(),
+        ChatRoomModel.KEY_LAST_MESSAGE: message.text,
+        ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
       });
 
       // Execute both actions together
@@ -144,8 +146,8 @@ class FirebaseRepository {
     return firebaseFirestore
         .collection(COLLECTION_CHATROOM)
         .doc(chatroomId)
-        .collection("messages")
-        .orderBy("creationDate", descending: true)
+        .collection(COLLECTION_MESSAGES)
+        .orderBy(MessageModel.KEY_CREATION_DATE, descending: true)
         .snapshots();
   }
 }
