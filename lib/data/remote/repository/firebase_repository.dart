@@ -1,9 +1,10 @@
-import "package:chat_app/data/models/user_model.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/cupertino.dart";
+import "package:vibe_connect/data/models/user_model.dart";
 
-import "../../models/message_model.dart";
 import "../../models/chatroom_model.dart";
+import "../../models/message_model.dart";
 
 class FirebaseRepository {
   static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -71,9 +72,13 @@ class FirebaseRepository {
     return await firebaseFirestore.collection(COLLECTION_USERS).get();
   }
 
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getUser(String userId) async {
+    return await firebaseFirestore.collection(COLLECTION_USERS).doc(userId).get();
+  }
+
   // --- Chat Methods ---
 
-  // 1. Get or Create a unique ChatRoom between two users
+  // 1. Create a unique ChatRoom between two users
   Future<String> getChatRoomId(String targetUserId) async {
     final String currentUserId = firebaseAuth.currentUser!.uid;
 
@@ -138,6 +143,39 @@ class FirebaseRepository {
     }
   }
 
+  // 4. Mark messages as seen
+  Future<void> markMessagesAsSeen(String chatroomId) async {
+    try {
+      final currentUserId = firebaseAuth.currentUser!.uid;
+
+      // Get all messages in this room that are NOT seen
+      final snapshot = await firebaseFirestore
+          .collection(COLLECTION_CHATROOM)
+          .doc(chatroomId)
+          .collection(COLLECTION_MESSAGES)
+          .where(MessageModel.KEY_SEEN, isEqualTo: false)
+          .get();
+
+      final WriteBatch batch = firebaseFirestore.batch();
+      bool needsUpdate = false;
+
+      for (var doc in snapshot.docs) {
+        // Only mark messages sent by the OTHER person as seen
+        if (doc.get(MessageModel.KEY_SENDER_ID) != currentUserId) {
+          batch.update(doc.reference, {MessageModel.KEY_SEEN: true});
+          needsUpdate = true;
+        }
+      }
+
+      if (needsUpdate) {
+        await batch.commit();
+      }
+    } catch (e) {
+      // Log error or ignore
+      debugPrint("Error marking messages as seen: $e");
+    }
+  }
+
   // 3. Listen to messages in a specific room in real-time
   Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(String chatroomId) {
     // We point to the "messages" sub-collection inside the specific chat room.
@@ -148,6 +186,15 @@ class FirebaseRepository {
         .doc(chatroomId)
         .collection(COLLECTION_MESSAGES)
         .orderBy(MessageModel.KEY_CREATION_DATE, descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChatrooms() {
+    final String currentUserId = firebaseAuth.currentUser!.uid;
+    return firebaseFirestore
+        .collection(COLLECTION_CHATROOM)
+        .where(ChatRoomModel.KEY_PARTICIPANTS, arrayContains: currentUserId)
+        .orderBy(ChatRoomModel.KEY_LAST_MESSAGE_TIME, descending: true)
         .snapshots();
   }
 }

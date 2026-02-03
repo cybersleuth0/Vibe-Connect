@@ -1,8 +1,9 @@
-import "package:chat_app/screens/auth/login_cubit/login_cubit.dart";
-import "package:chat_app/screens/auth/profile_setup.dart";
-import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
-import "package:chat_app/screens/chat/chat_cubit/chat_cubit.dart";
-import "package:chat_app/utils/custom_page_route.dart";
+import "package:vibe_connect/screens/auth/login_cubit/login_cubit.dart";
+import "package:vibe_connect/screens/auth/profile_setup.dart";
+import "package:vibe_connect/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
+import "package:vibe_connect/screens/chat/chat_cubit/chat_cubit.dart";
+import "package:vibe_connect/screens/core/home_cubit/home_cubit.dart";
+import "package:vibe_connect/utils/custom_page_route.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
@@ -13,7 +14,7 @@ import "../../screens/auth/sign_up_cubit/sign_up_cubit.dart";
 import "../../screens/chat/chat_screen.dart";
 import "../../screens/core/home_page.dart";
 import "../../screens/core/select_user_to_chat.dart";
-import "../../screens/core/splash_screen.dart";
+import "../../screens/splash/splash_screen.dart";
 import "../../screens/onboarding/onboarding_page.dart";
 
 class AppRoutes {
@@ -68,8 +69,15 @@ class AppRoutes {
         );
       case ROUTE_HOMEPAGE:
         return FadePageRoute(
-          child: BlocProvider(
-            create: (context) => LoginCubit(firebaseRepository: FirebaseRepository()),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => LoginCubit(firebaseRepository: FirebaseRepository()),
+              ),
+              BlocProvider(
+                create: (context) => HomeCubit(firebaseRepository: FirebaseRepository()),
+              ),
+            ],
             child: const HomePage(),
           ),
           settings: settings,

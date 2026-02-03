@@ -1,6 +1,6 @@
-import "package:chat_app/data/models/user_model.dart";
-import "package:chat_app/screens/auth/sign_up_cubit/sign_up_state.dart";
-import "package:chat_app/utils/auth_exception_handler.dart";
+import "package:vibe_connect/data/models/user_model.dart";
+import "package:vibe_connect/screens/auth/sign_up_cubit/sign_up_state.dart";
+import "package:vibe_connect/utils/auth_exception_handler.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "../../../data/remote/repository/firebase_repository.dart";
 

@@ -1,6 +1,6 @@
 import "dart:ui";
-import "package:chat_app/screens/auth/login_cubit/login_cubit.dart";
-import "package:chat_app/screens/auth/login_cubit/login_state.dart";
+import "package:vibe_connect/screens/auth/login_cubit/login_cubit.dart";
+import "package:vibe_connect/screens/auth/login_cubit/login_state.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";

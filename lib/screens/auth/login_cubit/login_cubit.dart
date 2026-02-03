@@ -1,6 +1,6 @@
-import "package:chat_app/data/remote/repository/firebase_repository.dart";
-import "package:chat_app/screens/auth/login_cubit/login_state.dart";
-import "package:chat_app/utils/auth_exception_handler.dart";
+import "package:vibe_connect/data/remote/repository/firebase_repository.dart";
+import "package:vibe_connect/screens/auth/login_cubit/login_state.dart";
+import "package:vibe_connect/utils/auth_exception_handler.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
 class LoginCubit extends Cubit<LoginState> {

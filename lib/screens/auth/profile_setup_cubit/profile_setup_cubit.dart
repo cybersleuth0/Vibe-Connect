@@ -1,5 +1,5 @@
-import "package:chat_app/data/remote/repository/firebase_repository.dart";
-import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_state.dart";
+import "package:vibe_connect/data/remote/repository/firebase_repository.dart";
+import "package:vibe_connect/screens/auth/profile_setup_cubit/profile_setup_state.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
 class ProfileSetupCubit extends Cubit<ProfileSetupState> {

@@ -1,6 +1,6 @@
-import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
-import "package:chat_app/screens/auth/profile_setup_cubit/profile_setup_state.dart";
-import "package:chat_app/utils/app_constants/app_constants.dart";
+import "package:vibe_connect/screens/auth/profile_setup_cubit/profile_setup_cubit.dart";
+import "package:vibe_connect/screens/auth/profile_setup_cubit/profile_setup_state.dart";
+import "package:vibe_connect/utils/app_constants/app_constants.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";

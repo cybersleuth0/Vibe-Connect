@@ -1,6 +1,6 @@
 import "dart:ui";
 
-import "package:chat_app/data/models/user_model.dart";
+import "package:vibe_connect/data/models/user_model.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";

@@ -1,4 +1,4 @@
-import "package:chat_app/data/models/message_model.dart";
+import "package:vibe_connect/data/models/message_model.dart";
 
 abstract class ChatState {}
 

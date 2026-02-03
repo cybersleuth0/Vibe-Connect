@@ -1,13 +1,14 @@
 import "dart:ui" as dart_ui;
 
-import "package:chat_app/screens/chat/chat_cubit/chat_cubit.dart";
-import "package:chat_app/screens/chat/chat_cubit/chat_state.dart";
+import "package:vibe_connect/screens/chat/chat_cubit/chat_cubit.dart";
+import "package:vibe_connect/screens/chat/chat_cubit/chat_state.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:intl/intl.dart";
 import "../../data/models/message_model.dart"; // Added import
 
 class ChatScreen extends StatefulWidget {
@@ -30,7 +31,8 @@ class _ChatScreenState extends State<ChatScreen> {
     targetUserId = args?["id"] ?? "";
     if (targetUserId.isNotEmpty && targetUserId != currentTargetId) {
       currentTargetId = targetUserId;
-      context.read<ChatCubit>().initChatRoom(targetUserId);
+      // Don't initialize the chat room here anymore - only initialize when sending first message
+      // We'll handle showing existing messages through the stream once the room is initialized
     }
   }
 
@@ -191,6 +193,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                     final messages = snapshot.data!.docs;
 
+                                    // Logic: Mark messages as seen when data arrives
+                                    // We use a microtask to avoid calling setState/Bloc during build
+                                    if (messages.isNotEmpty) {
+                                      Future.microtask(() {
+                                        if (context.mounted) {
+                                          context.read<ChatCubit>().markAsSeen();
+                                        }
+                                      });
+                                    }
+
                                     if (messages.isEmpty) {
                                       return const Center(
                                         child: Text("Say Hi! \u{1F44B}", style: TextStyle(color: Colors.white70)),
@@ -205,10 +217,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       itemBuilder: (context, index) {
                                         final msg = messages[index].data();
                                         final isMe = msg[MessageModel.KEY_SENDER_ID] == currentUserId;
+                                        final isSeen = msg[MessageModel.KEY_SEEN] ?? false;
                                         final time = (msg[MessageModel.KEY_CREATION_DATE] as Timestamp?)?.toDate();
-                                        final timeString = time != null
-                                            ? "${time.hour}:${time.minute.toString().padLeft(2, '0')}"
-                                            : "";
+                                        final timeString = time != null ? DateFormat("h:mm a").format(time) : "";
 
                                         return RepaintBoundary(
                                           child: Align(
@@ -284,13 +295,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       left: isMe ? 0 : 6,
                                                       right: isMe ? 6 : 0,
                                                     ),
-                                                    child: Text(
-                                                      timeString,
-                                                      style: TextStyle(
-                                                        color: Colors.white.withValues(alpha: 0.35),
-                                                        fontSize: 10,
-                                                        fontFamily: "Poppins",
-                                                      ),
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          timeString,
+                                                          style: TextStyle(
+                                                            color: Colors.white.withValues(alpha: 0.35),
+                                                            fontSize: 10,
+                                                            fontFamily: "Poppins",
+                                                          ),
+                                                        ),
+                                                        if (isMe) ...[
+                                                          const SizedBox(width: 4),
+                                                          Icon(
+                                                            isSeen ? Icons.done_all : Icons.done,
+                                                            size: 14,
+                                                            color: isSeen
+                                                                ? const Color(0xFF69F0AE) // Neon Green for Seen
+                                                                : Colors.white.withValues(alpha: 0.35), // Grey for Sent
+                                                          ),
+                                                        ],
+                                                      ],
                                                     ),
                                                   ),
                                               ],
@@ -301,8 +327,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                     );
                                   },
                                 );
+                              } else {
+                                // For ChatInitial state, show a message prompting user to send first message
+                                return const Center(
+                                  child: Text("Send a message to start chatting!",
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                );
                               }
-                              return const SizedBox.shrink();
                             },
                           ),
                           // Premium Floating Input Area
@@ -346,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           textInputAction: TextInputAction.done,
                                           onSubmitted: (value) {
                                             if (value.trim().isNotEmpty) {
-                                              context.read<ChatCubit>().sendMessage(value.trim());
+                                              context.read<ChatCubit>().sendMessage(value.trim(), targetUserId: targetUserId);
                                               _messageController.clear();
                                             }
                                           },
@@ -356,7 +388,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         onTap: () {
                                           HapticFeedback.mediumImpact();
                                           if (_messageController.text.isNotEmpty) {
-                                            context.read<ChatCubit>().sendMessage(_messageController.text);
+                                            context.read<ChatCubit>().sendMessage(_messageController.text, targetUserId: targetUserId);
                                             _messageController.clear();
                                           }
                                         },
