@@ -31,8 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
     targetUserId = args?["id"] ?? "";
     if (targetUserId.isNotEmpty && targetUserId != currentTargetId) {
       currentTargetId = targetUserId;
-      // Don't initialize the chat room here anymore - only initialize when sending first message
-      // We'll handle showing existing messages through the stream once the room is initialized
+      context.read<ChatCubit>().initChatRoom(targetUserId);
     }
   }
 
@@ -330,7 +329,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               } else {
                                 // For ChatInitial state, show a message prompting user to send first message
                                 return const Center(
-                                  child: Text("Send a message to start chatting!",
+                                  child: Text(
+                                    "Send a message to start chatting!",
                                     style: TextStyle(color: Colors.white70),
                                   ),
                                 );
@@ -378,7 +378,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                           textInputAction: TextInputAction.done,
                                           onSubmitted: (value) {
                                             if (value.trim().isNotEmpty) {
-                                              context.read<ChatCubit>().sendMessage(value.trim(), targetUserId: targetUserId);
+                                              context.read<ChatCubit>().sendMessage(
+                                                value.trim(),
+                                                targetUserId: targetUserId,
+                                              );
                                               _messageController.clear();
                                             }
                                           },
@@ -388,7 +391,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                         onTap: () {
                                           HapticFeedback.mediumImpact();
                                           if (_messageController.text.isNotEmpty) {
-                                            context.read<ChatCubit>().sendMessage(_messageController.text, targetUserId: targetUserId);
+                                            context.read<ChatCubit>().sendMessage(
+                                              _messageController.text,
+                                              targetUserId: targetUserId,
+                                            );
                                             _messageController.clear();
                                           }
                                         },

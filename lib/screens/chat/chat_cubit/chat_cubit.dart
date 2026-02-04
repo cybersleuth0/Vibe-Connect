@@ -13,10 +13,10 @@ class ChatCubit extends Cubit<ChatState> {
   String? currentChatRoomId;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _messagesStream;
 
-  // Initialize Chat Room - this creates the room if it doesn't exist
-  Future<void> initChatRoom(String targetUserId) async {
+  // Initialize Chat Room - this gets the room ID and starts listening
+  void initChatRoom(String targetUserId) {
     try {
-      final roomId = await firebaseRepository.getChatRoomId(targetUserId);
+      final roomId = firebaseRepository.getChatRoomId(targetUserId);
       if (currentChatRoomId != roomId) {
         currentChatRoomId = roomId;
         _messagesStream = firebaseRepository.getMessages(roomId);
@@ -27,35 +27,18 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 
-  // Check if chat room is initialized
-  bool isChatRoomInitialized() {
-    return currentChatRoomId != null;
-  }
-
-  // Method to get messages stream without initializing the room
-  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getExistingMessagesStream(String targetUserId) async {
-    try {
-      final roomId = await firebaseRepository.getChatRoomId(targetUserId);
-      // Don't store the room ID or emit state - just return the stream temporarily
-      return firebaseRepository.getMessages(roomId);
-    } catch (e) {
-      // Return empty stream if there's an error
-      return const Stream.empty();
-    }
-  }
-
   // Send Message
   Future<void> sendMessage(String text, {String? targetUserId}) async {
     if (text.trim().isEmpty) return;
 
-    // Initialize chat room if not already initialized
-    if (currentChatRoomId == null && targetUserId != null) {
-      emit(ChatLoading()); // Show loading while initializing room
-      await initChatRoom(targetUserId);
+    // We need a targetUserId if the room isn't initialized yet
+    final String? effectiveTargetUserId = targetUserId;
+
+    if (currentChatRoomId == null && effectiveTargetUserId != null) {
+      initChatRoom(effectiveTargetUserId);
     }
 
-    // If still no chat room ID after initialization attempt, return
-    if (currentChatRoomId == null) return;
+    if (currentChatRoomId == null || effectiveTargetUserId == null) return;
 
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) return;
@@ -69,28 +52,15 @@ class ChatCubit extends Cubit<ChatState> {
     );
 
     try {
-      await firebaseRepository.sendMessage(chatroomId: currentChatRoomId!, message: message);
+      await firebaseRepository.sendMessage(targetUserId: effectiveTargetUserId, message: message);
     } catch (e) {
       // Don't emit error state here as it would replace the chat UI
-      // Use a separate side-effect mechanism or just log it
     }
   }
 
   // Get Messages Stream
   Stream<QuerySnapshot<Map<String, dynamic>>> getMessagesStream() {
     return _messagesStream ?? const Stream.empty();
-  }
-
-  // Get temporary messages stream for uninitialized rooms
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUninitializedMessagesStream(String targetUserId) {
-    try {
-      // This will trigger room creation, but that's necessary to get messages
-      // To truly avoid room creation until first message, we'd need a different approach in the repository
-      // For now, we'll just return an empty stream if the room isn't initialized
-      return const Stream.empty();
-    } catch (e) {
-      return const Stream.empty();
-    }
   }
 
   Future<void> markAsSeen() async {

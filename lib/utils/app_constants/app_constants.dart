@@ -27,15 +27,6 @@ class AppRoutes {
   static const String ROUTE_CHATSCREEN = "/chat";
   static const String ROUTE_SELECT_USER_TO_CHAT_SCREEN = "/select-user-to-chat";
 
-  // OLD METHOD - Not used anymore but kept for reference
-  // static Map<String, WidgetBuilder> getRoutes() => {
-  //   ROUTE_SPLASHPAGE: (context) => const SplashPage(),
-  //   ROUTE_ONBOARDINGPAGE: (context) => const OnBoardingPage(),
-  //   ROUTE_SIGNINPAGE: (context) => const SignInPage(),
-  //   ROUTE_HOMEPAGE: (context) => const HomePage(),
-  //   ROUTE_CHATSCREEN: (context) => const ChatScreen(),
-  // };
-
   // NEW METHOD - Custom route generator with fade transitions
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -71,12 +62,8 @@ class AppRoutes {
         return FadePageRoute(
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (context) => LoginCubit(firebaseRepository: FirebaseRepository()),
-              ),
-              BlocProvider(
-                create: (context) => HomeCubit(firebaseRepository: FirebaseRepository()),
-              ),
+              BlocProvider(create: (context) => LoginCubit(firebaseRepository: FirebaseRepository())),
+              BlocProvider(create: (context) => HomeCubit(firebaseRepository: FirebaseRepository())),
             ],
             child: const HomePage(),
           ),

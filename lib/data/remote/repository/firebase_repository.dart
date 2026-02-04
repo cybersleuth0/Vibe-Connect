@@ -72,46 +72,57 @@ class FirebaseRepository {
     return await firebaseFirestore.collection(COLLECTION_USERS).get();
   }
 
+  // Get user by id
   static Future<DocumentSnapshot<Map<String, dynamic>>> getUser(String userId) async {
     return await firebaseFirestore.collection(COLLECTION_USERS).doc(userId).get();
   }
 
   // --- Chat Methods ---
 
-  // 1. Create a unique ChatRoom between two users
-  Future<String> getChatRoomId(String targetUserId) async {
+  // 1. Get a unique ChatRoom ID between two users (Synchronous)
+  String getChatRoomId(String targetUserId) {
     final String currentUserId = firebaseAuth.currentUser!.uid;
 
     // To ensure both users end up in the SAME room, we sort their IDs alphabetically.
-    // This way, Ayush_John and John_Ayush both become "Ayush_John".
-
     final List<String> ids = [currentUserId, targetUserId];
     ids.sort();
-    final String chatroomId = ids.join("_");
-
-    // Check if this room already exists in our "chatroom" collection
-    final roomDoc = await firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId).get();
-
-    if (!roomDoc.exists) {
-      // If the room doesn't exist, we create it with initial metadata
-      await firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId).set({
-        ChatRoomModel.KEY_CHATROOM_ID: chatroomId,
-        ChatRoomModel.KEY_PARTICIPANTS: ids,
-        ChatRoomModel.KEY_LAST_MESSAGE: "",
-        ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
-        ChatRoomModel.KEY_UNREAD_COUNTS: {currentUserId: 0, targetUserId: 0},
-      });
-    }
-
-    return chatroomId;
+    return ids.join("_");
   }
 
   // 2. Send a Message and update the room's "Last Message" preview
-  Future<void> sendMessage({required String chatroomId, required MessageModel message}) async {
+  Future<void> sendMessage({required String targetUserId, required MessageModel message}) async {
     try {
-      // Create a reference for a new message document (generates a random unique ID)
-      // Path: chatroom -> {chatroomId} -> messages -> {random_msg_id}
+      final String chatroomId = getChatRoomId(targetUserId);
+      final String currentUserId = firebaseAuth.currentUser!.uid;
 
+      // Check if this room already exists
+      final roomDoc = await firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId).get();
+      final WriteBatch batch = firebaseFirestore.batch();
+
+      if (!roomDoc.exists) {
+        final List<String> participants = [currentUserId, targetUserId];
+        participants.sort();
+
+        batch.set(firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId), {
+          ChatRoomModel.KEY_CHATROOM_ID: chatroomId,
+          ChatRoomModel.KEY_PARTICIPANTS: participants,
+          ChatRoomModel.KEY_LAST_MESSAGE: message.text,
+          ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
+          ChatRoomModel.KEY_UNREAD_COUNTS: {
+            currentUserId: 0,
+            targetUserId: 1, // The receiver starts with 1 unread
+          },
+        });
+      } else {
+        // Room exists, update last message and increment unread count for the receiver
+        batch.update(firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId), {
+          ChatRoomModel.KEY_LAST_MESSAGE: message.text,
+          ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
+          "${ChatRoomModel.KEY_UNREAD_COUNTS}.$targetUserId": FieldValue.increment(1),
+        });
+      }
+
+      // Create a reference for a new message document
       final docRef = firebaseFirestore
           .collection(COLLECTION_CHATROOM)
           .doc(chatroomId)
@@ -121,58 +132,13 @@ class FirebaseRepository {
       // Assign the generated unique ID to the message object
       message.messageId = docRef.id;
 
-      // We use a WriteBatch to perform two updates at the same time (atomically).
-      // This ensures data consistency: the message is saved AND the preview is updated.
-      final WriteBatch batch = firebaseFirestore.batch();
-
-      // Step 1: Save the actual message data in the sub-collection
+      // Save the actual message data
       batch.set(docRef, message.toDoc());
 
-      // Step 2: Update the outer ChatRoom document with the latest message text and time.
-
-      // This is used to show the "Last Message" on the Home Screen chat list.
-      batch.update(firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId), {
-        ChatRoomModel.KEY_LAST_MESSAGE: message.text,
-        ChatRoomModel.KEY_LAST_MESSAGE_TIME: FieldValue.serverTimestamp(),
-      });
-
-      // Execute both actions together
+      // Execute everything together
       await batch.commit();
     } catch (e) {
       rethrow;
-    }
-  }
-
-  // 4. Mark messages as seen
-  Future<void> markMessagesAsSeen(String chatroomId) async {
-    try {
-      final currentUserId = firebaseAuth.currentUser!.uid;
-
-      // Get all messages in this room that are NOT seen
-      final snapshot = await firebaseFirestore
-          .collection(COLLECTION_CHATROOM)
-          .doc(chatroomId)
-          .collection(COLLECTION_MESSAGES)
-          .where(MessageModel.KEY_SEEN, isEqualTo: false)
-          .get();
-
-      final WriteBatch batch = firebaseFirestore.batch();
-      bool needsUpdate = false;
-
-      for (var doc in snapshot.docs) {
-        // Only mark messages sent by the OTHER person as seen
-        if (doc.get(MessageModel.KEY_SENDER_ID) != currentUserId) {
-          batch.update(doc.reference, {MessageModel.KEY_SEEN: true});
-          needsUpdate = true;
-        }
-      }
-
-      if (needsUpdate) {
-        await batch.commit();
-      }
-    } catch (e) {
-      // Log error or ignore
-      debugPrint("Error marking messages as seen: $e");
     }
   }
 
@@ -189,7 +155,41 @@ class FirebaseRepository {
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChatrooms() {
+  // 4. Mark messages as seen
+  Future<void> markMessagesAsSeen(String chatroomId) async {
+    try {
+      final currentUserId = firebaseAuth.currentUser!.uid;
+
+      // Get all messages in this room that are NOT seen
+      final snapshot = await firebaseFirestore
+          .collection(COLLECTION_CHATROOM)
+          .doc(chatroomId)
+          .collection(COLLECTION_MESSAGES)
+          .where(MessageModel.KEY_SEEN, isEqualTo: false)
+          .get();
+
+      final WriteBatch batch = firebaseFirestore.batch();
+
+      for (var doc in snapshot.docs) {
+        // Only mark messages sent by the OTHER person as seen
+        if (doc.get(MessageModel.KEY_SENDER_ID) != currentUserId) {
+          batch.update(doc.reference, {MessageModel.KEY_SEEN: true});
+        }
+      }
+
+      // Reset unread count for the current user
+      batch.update(firebaseFirestore.collection(COLLECTION_CHATROOM).doc(chatroomId), {
+        "${ChatRoomModel.KEY_UNREAD_COUNTS}.$currentUserId": 0,
+      });
+
+      await batch.commit();
+    } catch (e) {
+      // Log error or ignore
+      debugPrint("Error marking messages as seen: $e");
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChatRooms() {
     final String currentUserId = firebaseAuth.currentUser!.uid;
     return firebaseFirestore
         .collection(COLLECTION_CHATROOM)

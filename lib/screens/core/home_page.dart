@@ -1,12 +1,9 @@
 import "dart:ui" as dart_ui;
 
-import "package:vibe_connect/data/models/chatroom_model.dart";
-import "package:vibe_connect/data/models/user_model.dart";
-import "package:vibe_connect/data/remote/repository/firebase_repository.dart";
 import "package:vibe_connect/screens/auth/login_cubit/login_cubit.dart";
 import "package:vibe_connect/screens/auth/login_cubit/login_state.dart";
 import "package:vibe_connect/screens/core/home_cubit/home_cubit.dart";
-import "package:cloud_firestore/cloud_firestore.dart";
+import "package:vibe_connect/screens/core/home_cubit/home_state.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
@@ -36,6 +33,12 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().loadChatRooms();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -43,6 +46,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginInitial) {
@@ -198,245 +203,269 @@ class _HomePageState extends State<HomePage> {
               ).animate().scale(delay: 500.ms, duration: 400.ms),
             ],
           ),
-          body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: context.read<HomeCubit>().getChatroomsStream(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          body: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              if (state is HomeLoading) {
+                // Loading Spinner
                 return ListView.builder(
-                  padding: const EdgeInsets.only(top: 20),
-                  itemCount: 6,
-                  itemBuilder: (_, __) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 58,
-                          height: 58,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                      padding: const EdgeInsets.only(top: 20),
+                      itemCount: 6,
+                      itemBuilder: (_, __) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 58,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.05),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              const SizedBox(height: 8),
-                              Container(
-                                width: double.infinity,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 120,
+                                    height: 16,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.05),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.05),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ).animate(onPlay: (controller) => controller.repeat()).shimmer(
-                      duration: 1200.ms,
-                      color: Colors.white.withValues(alpha: 0.05),
-                      angle: 0.45,
-                    );
-              } else if (snapshot.hasError) {
+                      ),
+                    )
+                    .animate(onPlay: (controller) => controller.repeat())
+                    .shimmer(duration: 1200.ms, color: Colors.white.withValues(alpha: 0.05), angle: 0.45);
+              } else if (state is HomeError) {
                 return Center(
-                  child: Text("Error: ${snapshot.error}", style: const TextStyle(color: Colors.white)),
+                  child: Text("Error: ${state.error}", style: const TextStyle(color: Colors.white)),
                 );
-              } else if (snapshot.hasData) {
-                final chatRooms = snapshot.data!.docs.map((doc) => ChatRoomModel.fromDoc(doc.data())).toList();
+              } else if (state is HomeLoaded) {
+                final chatRoomsWithUsers = state.chatRooms;
 
-                if (chatRooms.isEmpty) {
+                if (chatRoomsWithUsers.isEmpty) {
                   return const Center(
                     child: Text("No chats yet. Start vibing!", style: TextStyle(color: Colors.white)),
                   );
                 }
 
-                return ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(35),
-                    topRight: Radius.circular(35),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xff0A1832).withValues(alpha: 0.8),
-                      border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1)),
-                    ),
-                    child: ListView.builder(
-                      padding: const EdgeInsets.only(top: 10, bottom: 100),
-                      itemCount: chatRooms.length,
-                      itemBuilder: (context, index) {
-                        final chatRoom = chatRooms[index];
-                        final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-                        final otherUserId =
-                            chatRoom.participants?.firstWhere((id) => id != currentUserId, orElse: () => "");
+                return Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(35), topRight: Radius.circular(35)),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff0A1832).withValues(alpha: 0.8),
+                        border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.2), width: 1)),
+                      ),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(top: 10, bottom: 100),
+                        itemCount: chatRoomsWithUsers.length,
+                        itemBuilder: (context, index) {
+                          final item = chatRoomsWithUsers[index];
+                          final chatRoom = item.chatRoom;
+                          final user = item.user;
 
-                        if (otherUserId == null || otherUserId.isEmpty) return const SizedBox.shrink();
+                          // Basic filtering logic
+                          if (_isSearching &&
+                              !(user.name ?? "").toLowerCase().contains(_searchController.text.toLowerCase())) {
+                            return const SizedBox.shrink();
+                          }
 
-                        // Fetch other user's data
-                        return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                          future: FirebaseRepository.getUser(otherUserId),
-                          builder: (context, userSnapshot) {
-                            if (!userSnapshot.hasData) return const SizedBox.shrink();
+                          final avatarUrl =
+                              "https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name ?? 'User')}&background=random";
 
-                            final user = UserModel.fromDoc(userSnapshot.data!.data()!);
+                          final lastMessageTime = chatRoom.lastMessageTime != null
+                              ? DateFormat("h:mm a").format(chatRoom.lastMessageTime!)
+                              : "";
 
-                            // Basic filtering logic
-                            if (_isSearching &&
-                                !(user.name ?? "").toLowerCase().contains(_searchController.text.toLowerCase())) {
-                              return const SizedBox.shrink();
-                            }
-
-                            final avatarUrl =
-                                "https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name ?? 'User')}&background=random";
-
-                            final lastMessageTime = chatRoom.lastMessageTime != null
-                                ? DateFormat("h:mm a").format(chatRoom.lastMessageTime!)
-                                : "";
-
-                            return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                              child: GestureDetector(
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.ROUTE_CHATSCREEN,
-                                    arguments: {"name": user.name, "avatar": avatarUrl, "id": user.userId},
-                                  );
-                                },
-                                behavior: HitTestBehavior.opaque,
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.05),
-                                    borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      // Avatar with Online Status
-                                      Stack(
-                                        children: [
-                                          Container(
-                                            width: 54,
-                                            height: 54,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(18),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.2),
-                                                  blurRadius: 10,
-                                                  offset: const Offset(0, 4),
-                                                ),
-                                              ],
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(18),
-                                              child: Image.network(
-                                                "$avatarUrl&format=png",
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  return Container(
-                                                    color: Colors.grey.withValues(alpha: 0.3),
-                                                    child: const Icon(Icons.person, color: Colors.white),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          if (user.isOnline)
-                                            Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: Container(
-                                                width: 14,
-                                                height: 14,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xFF69F0AE),
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(color: const Color(0xff0A1832), width: 2),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: const Color(0xFF69F0AE).withValues(alpha: 0.5),
-                                                      blurRadius: 6,
-                                                      spreadRadius: 1,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 16),
-                                      // Content
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                          return Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.ROUTE_CHATSCREEN,
+                                      arguments: {"name": user.name, "avatar": avatarUrl, "id": user.userId},
+                                    );
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.05),
+                                      borderRadius: BorderRadius.circular(24),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        // Avatar with Online Status
+                                        Stack(
                                           children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  user.name ?? "User",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16,
-                                                    fontFamily: "Poppins",
-                                                    color: Colors.white,
-                                                    letterSpacing: 0.2,
+                                            Container(
+                                              width: 54,
+                                              height: 54,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(18),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withValues(alpha: 0.2),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 4),
                                                   ),
-                                                ),
-                                                Text(
-                                                  lastMessageTime,
-                                                  style: TextStyle(
-                                                    color: Colors.white.withValues(alpha: 0.4),
-                                                    fontSize: 11,
-                                                    fontFamily: "Poppins",
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              chatRoom.lastMessage ?? "Start chatting...",
-                                              style: TextStyle(
-                                                color: Colors.white.withValues(alpha: 0.6),
-                                                fontSize: 13,
-                                                fontFamily: "Poppins",
-                                                fontWeight: FontWeight.w400,
+                                                ],
                                               ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(18),
+                                                child: Image.network(
+                                                  "$avatarUrl&format=png",
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    return Container(
+                                                      color: Colors.grey.withValues(alpha: 0.3),
+                                                      child: const Icon(Icons.person, color: Colors.white),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                             ),
+                                            if (user.isOnline)
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  width: 14,
+                                                  height: 14,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF69F0AE),
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(color: const Color(0xff0A1832), width: 2),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(0xFF69F0AE).withValues(alpha: 0.5),
+                                                        blurRadius: 6,
+                                                        spreadRadius: 1,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 16),
+                                        // Content
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    user.name ?? "User",
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 16,
+                                                      fontFamily: "Poppins",
+                                                      color: Colors.white,
+                                                      letterSpacing: 0.2,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    lastMessageTime,
+                                                    style: TextStyle(
+                                                      color: Colors.white.withValues(alpha: 0.4),
+                                                      fontSize: 11,
+                                                      fontFamily: "Poppins",
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      chatRoom.lastMessage ?? "Start chatting...",
+                                                      style: TextStyle(
+                                                        color: (chatRoom.unreadCounts?[currentUserId] ?? 0) > 0
+                                                            ? Colors.white
+                                                            : Colors.white.withValues(alpha: 0.6),
+                                                        fontSize: 13,
+                                                        fontFamily: "Poppins",
+                                                        fontWeight: (chatRoom.unreadCounts?[currentUserId] ?? 0) > 0
+                                                            ? FontWeight.w600
+                                                            : FontWeight.w400,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  if ((chatRoom.unreadCounts?[currentUserId] ?? 0) > 0)
+                                                    Container(
+                                                      margin: const EdgeInsets.only(left: 8),
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                      decoration: BoxDecoration(
+                                                        //color: const Color(0xFFD96FF8),
+                                                        color: Colors.green,
+                                                        borderRadius: BorderRadius.circular(12),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: const Color(0xFFD96FF8).withValues(alpha: 0.3),
+                                                            blurRadius: 6,
+                                                            offset: const Offset(0, 2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Text(
+                                                        "${chatRoom.unreadCounts?[currentUserId]}",
+                                                        //chatRoom.unreadCounts![currentUserId].toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut);
-                          },
-                        );
-                      },
+                              )
+                              .animate()
+                              .fadeIn(duration: 400.ms)
+                              .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut);
+                        },
+                      ),
                     ),
                   ),
                 );
               }
-              return const SizedBox.shrink(); // Initial state
+              return const SizedBox.shrink();
             },
           ),
           // Floating Bottom Navigation

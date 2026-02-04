@@ -37,7 +37,9 @@ class ChatRoomModel {
       participants: List<String>.from(doc[KEY_PARTICIPANTS] ?? []),
       lastMessage: doc[KEY_LAST_MESSAGE],
       lastMessageTime: (doc[KEY_LAST_MESSAGE_TIME] as Timestamp?)?.toDate(),
-      unreadCounts: Map<String, int>.from(doc[KEY_UNREAD_COUNTS] ?? {}),
+      unreadCounts: (doc[KEY_UNREAD_COUNTS] as Map? ?? {}).map(
+        (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+      ),
     );
   }
 }
